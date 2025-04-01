@@ -19,6 +19,11 @@ class BeltmaticSolverTest {
         //TODO also assert that formula is "3 + 4" or "4 + 3"
     }
 
+    @Test
+    fun `test 2`() {
+        println(evaluate("4 / 3 * 6")) //TODO I want it equal 6, not 8. We need to do integer divisions...
+    }
+
     @Suppress("MoveVariableDeclarationIntoWhen")
     private fun evaluate(expression: String): Int {
         val engine = ScriptEngineManager().getEngineByName("js")
