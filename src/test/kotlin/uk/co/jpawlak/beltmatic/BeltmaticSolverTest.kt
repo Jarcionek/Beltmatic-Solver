@@ -17,7 +17,8 @@ class BeltmaticSolverTest {
         return Stream.of(
             Arguments.of(listOf(2, 3, 4), 7),
             Arguments.of(listOf(3, 1, 5), 4),
-            Arguments.of(listOf(10, 5, 2), 12)
+            Arguments.of(listOf(10, 5, 2), 12),
+            Arguments.of(listOf(3, 4, 5), 6),
         ).map { arguments ->
             DynamicTest.dynamicTest("${arguments.get()[0]} -> ${arguments.get()[1]}") {
                 val availableNumbers = arguments.get()[0] as List<Int>
