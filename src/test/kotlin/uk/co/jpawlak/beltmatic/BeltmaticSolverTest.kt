@@ -29,6 +29,27 @@ class BeltmaticSolverTest {
 
                 //TODO user proper testing library
                 assertEquals(targetNumber, result)
+                //TODO assert on the number of operations used
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @TestFactory
+    fun `returns 2 operations formula with additions only`(): Stream<DynamicTest> {
+        return Stream.of(
+            Arguments.of(listOf(5), 15),
+            Arguments.of(listOf(3, 10, 40), 53),
+            Arguments.of(listOf(3, 10, 40), 16),
+        ).map { arguments ->
+            DynamicTest.dynamicTest("${arguments.get()[0]} -> ${arguments.get()[1]}") {
+                val availableNumbers = arguments.get()[0] as List<Int>
+                val targetNumber = arguments.get()[1] as Int
+
+                val formula = solver.solve(availableNumbers, targetNumber)
+                val result = evaluate(formula)
+
+                assertEquals(targetNumber, result)
             }
         }
     }
