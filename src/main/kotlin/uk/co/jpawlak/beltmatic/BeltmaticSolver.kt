@@ -5,19 +5,24 @@ class BeltmaticSolver {
     fun solve(availableNumbers: List<Int>, targetNumber: Int): String {
         val results: MutableMap<Int, Result> = availableNumbers.associateBy({ it }, { Result(it, 0, "$it") }).toMutableMap()
 
-        val newResults: MutableMap<Int, Result> = mutableMapOf()
+        val newResults: MutableMap<Int, Result> = calculateNewResults(results)
+        if (newResults.containsKey(targetNumber)) {
+            return newResults[targetNumber]!!.formula
+        }
+
+        throw IllegalArgumentException("No formula found")
+    }
+
+    private fun calculateNewResults(results: MutableMap<Int, Result>): MutableMap<Int, Result> {
+        val newResults: MutableMap<Int, Result> =  mutableMapOf()
         for (a in results.values) {
             for (b in results.values) {
                 val newResult = join(a, b)
-                if (newResult.targetNumber == targetNumber) {
-                    return newResult.formula
-                }
-                if (!newResults.containsKey(newResult.targetNumber)) {
-                    newResults[newResult.targetNumber] = newResult
-                }
+                newResults[newResult.targetNumber] = newResult
+                //TODO when inserting into the map, we need to pick the one with fewest operations
             }
         }
-        throw IllegalArgumentException("No formula found")
+        return newResults
     }
 
     private fun join(a: Result, b: Result): Result {
@@ -30,6 +35,7 @@ class BeltmaticSolver {
 
 }
 
+//TODO rename it - how to call it? AvailableNumber?
 data class Result(
     val targetNumber: Int,
     val numberOfOperations: Int,
