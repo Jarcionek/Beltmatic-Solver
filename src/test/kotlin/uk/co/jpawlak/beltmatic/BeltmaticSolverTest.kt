@@ -30,7 +30,7 @@ class BeltmaticSolverTest {
                 val result = evaluate(formula)
 
                 //TODO user proper testing library
-                assertEquals(targetNumber, result)
+                assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
                 //TODO assert on the number of operations used
             }
         }
@@ -51,7 +51,7 @@ class BeltmaticSolverTest {
                 val formula = solver.solve(availableNumbers, targetNumber)
                 val result = evaluate(formula)
 
-                assertEquals(targetNumber, result)
+                assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
             }
         }
     }
