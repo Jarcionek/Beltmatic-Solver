@@ -31,7 +31,7 @@ class BeltmaticSolverTest {
 
                 //TODO user proper testing library
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
-                //TODO assert on the number of operations used
+                assertEquals(1, operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
@@ -52,6 +52,7 @@ class BeltmaticSolverTest {
                 val result = evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+                assertEquals(2, operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
@@ -81,5 +82,7 @@ class BeltmaticSolverTest {
             else -> throw IllegalArgumentException("Expression did not evaluate to a number")
         }
     }
+
+    private fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
 
 }
