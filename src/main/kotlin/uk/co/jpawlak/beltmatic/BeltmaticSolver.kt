@@ -28,6 +28,7 @@ class BeltmaticSolver {
         for (a in availableNumbers.values) {
             for (b in availableNumbers.values) {
                 addIfBetter(newNumbers, a.add(b))
+                addIfBetter(newNumbers, a.subtract(b))
             }
         }
         return newNumbers
@@ -56,7 +57,13 @@ private data class AvailableNumber(
 
     fun add(that: AvailableNumber) = AvailableNumber(
         this.number + that.number,
-        "${this.formula} + ${that.formula}", //TODO will need parenthesis here
+        "(${this.formula}) + (${that.formula})", //TODO too many parenthesis, optimise it
+        this.formulaOperationsCount + that.formulaOperationsCount
+    )
+
+    fun subtract(that: AvailableNumber) = AvailableNumber(
+        this.number - that.number,
+        "(${this.formula}) - (${that.formula})",
         this.formulaOperationsCount + that.formulaOperationsCount
     )
 

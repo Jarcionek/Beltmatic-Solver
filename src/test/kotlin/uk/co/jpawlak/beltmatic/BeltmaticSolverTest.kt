@@ -9,11 +9,11 @@ import org.junit.jupiter.params.provider.Arguments
 import java.util.stream.Stream
 import javax.script.ScriptEngineManager
 
+@Suppress("UNCHECKED_CAST")
 class BeltmaticSolverTest {
 
     private val solver = BeltmaticSolver()
 
-    @Suppress("UNCHECKED_CAST")
     @TestFactory
     fun `returns 1 operation formula with simple addition`(): Stream<DynamicTest> {
         return Stream.of(
@@ -36,7 +36,6 @@ class BeltmaticSolverTest {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     @TestFactory
     fun `returns 2 operations formula with additions only`(): Stream<DynamicTest> {
         return Stream.of(
@@ -53,6 +52,30 @@ class BeltmaticSolverTest {
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
                 assertEquals(2, operationCount(formula), "Unexpected number of operations: $formula")
+            }
+        }
+    }
+
+    @TestFactory
+    fun `returns formula with additions and subtractions only`(): Stream<DynamicTest> {
+        return Stream.of(
+            Arguments.of(1, listOf(7), 0), // 7 - 7
+            Arguments.of(1, listOf(5, 8), 3), // 8 - 5
+            Arguments.of(1, listOf(8, 5), 3), // 8 - 5
+            Arguments.of(2, listOf(10, 100, 1000), 890), // 1000 - 100 - 10
+            Arguments.of(2, listOf(1000, 100, 10), 890), // 1000 - 100 - 10
+            Arguments.of(2, listOf(3, 10, 40), 47), // 40 + 10 - 3
+        ).map { arguments ->
+            DynamicTest.dynamicTest("${arguments.get()[1]} -> ${arguments.get()[2]} in ${arguments.get()[0]} operations") {
+                val expectedOperations = arguments.get()[0] as Int
+                val availableNumbers = arguments.get()[1] as List<Int>
+                val targetNumber = arguments.get()[2] as Int
+
+                val formula = solver.solve(availableNumbers, targetNumber)
+                val result = evaluate(formula)
+
+                assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+                assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
