@@ -47,7 +47,9 @@ class BeltmaticSolver {
                 addIfBetter(newNumbers, a.subtract(b))
                 addIfBetter(newNumbers, a.multiply(b))
                 if (b.number in 2..3) { //TODO without this restriction it runs out of heap
-                    addIfBetter(newNumbers, a.power(b))
+                    if (a.number < 65536) { // this is 2^31, square it, and we get MAX INT; for cube the limit is around 1625; for ^4 the limit is 256
+                        addIfBetter(newNumbers, a.power(b))
+                    }
                 }
             }
         }
