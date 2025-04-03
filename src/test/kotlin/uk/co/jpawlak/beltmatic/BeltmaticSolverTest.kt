@@ -1,7 +1,9 @@
 package uk.co.jpawlak.beltmatic
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.provider.Arguments
 import java.util.stream.Stream
@@ -52,6 +54,14 @@ class BeltmaticSolverTest {
                 assertEquals(targetNumber, result)
             }
         }
+    }
+
+    @Test
+    fun `throws exception when it was not possible to find a formula`() {
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            solver.solve(listOf(0), 3)
+        }
+        assertEquals("Could not find a formula to get 3 using no more than 2 operations", exception.message)
     }
 
     @Suppress("MoveVariableDeclarationIntoWhen")

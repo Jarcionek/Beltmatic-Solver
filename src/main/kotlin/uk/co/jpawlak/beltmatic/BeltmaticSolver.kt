@@ -1,5 +1,7 @@
 package uk.co.jpawlak.beltmatic
 
+private const val MAX_OPERATIONS = 2
+
 class BeltmaticSolver {
 
     fun solve(availableNumbers: List<Int>, targetNumber: Int): String {
@@ -9,7 +11,7 @@ class BeltmaticSolver {
             0
         ) }).toMutableMap()
 
-        for (i in 1..2) { //TODO extract to MAX_OPERATIONS constant; update exception message
+        for (i in 1..MAX_OPERATIONS) {
             val newResults: MutableMap<Int, AvailableNumber> = calculateNewResults(results)
             if (newResults.containsKey(targetNumber)) {
                 return newResults[targetNumber]!!.formula
@@ -22,7 +24,7 @@ class BeltmaticSolver {
             }
         }
 
-        throw IllegalArgumentException("No formula found")
+        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $MAX_OPERATIONS operations")
     }
 
     private fun calculateNewResults(results: Map<Int, AvailableNumber>): MutableMap<Int, AvailableNumber> {
