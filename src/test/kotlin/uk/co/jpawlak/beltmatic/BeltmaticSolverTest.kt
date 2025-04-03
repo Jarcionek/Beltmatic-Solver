@@ -25,6 +25,8 @@ class BeltmaticSolverTest {
         )
     }
 
+    //TODO edge case of target number being in available numbers is not handled
+
     @TestFactory
     fun `returns 1 operation formula with simple addition`(): Stream<DynamicTest> {
         return Stream.of(
