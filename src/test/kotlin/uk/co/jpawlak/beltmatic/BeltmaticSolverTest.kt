@@ -12,6 +12,19 @@ class BeltmaticSolverTest {
 
     private val solver = BeltmaticSolver()
 
+    @Test
+    fun `throws exception when it was not possible to find a formula`() {
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            solver.solve(listOf(0), 3)
+        }
+
+        //TODO user proper testing library
+        assertTrue(
+            exception.message!!.startsWith("Could not find a formula to get 3 using no more than "),
+            "Unexpected exception message: ${exception.message}"
+        )
+    }
+
     @TestFactory
     fun `returns 1 operation formula with simple addition`(): Stream<DynamicTest> {
         return Stream.of(
@@ -114,19 +127,6 @@ class BeltmaticSolverTest {
                 assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
-    }
-
-    @Test
-    fun `throws exception when it was not possible to find a formula`() {
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            solver.solve(listOf(0), 3)
-        }
-
-        //TODO user proper testing library
-        assertTrue(
-            exception.message!!.startsWith("Could not find a formula to get 3 using no more than "),
-            "Unexpected exception message: ${exception.message}"
-        )
     }
 
     private fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
