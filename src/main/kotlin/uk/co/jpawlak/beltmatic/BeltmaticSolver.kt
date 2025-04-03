@@ -7,7 +7,7 @@ package uk.co.jpawlak.beltmatic
  *
  * So max operations is actually equal (2 ^ iterations) - 1
  */
-private const val MAX_ITERATIONS = 2 //TODO change it to MAX_OPERATIONS
+private const val MAX_ITERATIONS = 3 //TODO change it to MAX_OPERATIONS
 
 class BeltmaticSolver {
 
@@ -43,6 +43,7 @@ class BeltmaticSolver {
             for (b in availableNumbers.values) {
                 addIfBetter(newNumbers, a.add(b))
                 addIfBetter(newNumbers, a.subtract(b))
+                addIfBetter(newNumbers, a.multiply(b))
             }
         }
         return newNumbers
@@ -78,6 +79,12 @@ private data class AvailableNumber(
     fun subtract(that: AvailableNumber) = AvailableNumber(
         this.number - that.number,
         "(${this.formula}) - (${that.formula})",
+        this.formulaOperationsCount + that.formulaOperationsCount
+    )
+
+    fun multiply(that: AvailableNumber) = AvailableNumber(
+        this.number * that.number,
+        "(${this.formula}) * (${that.formula})",
         this.formulaOperationsCount + that.formulaOperationsCount
     )
 
