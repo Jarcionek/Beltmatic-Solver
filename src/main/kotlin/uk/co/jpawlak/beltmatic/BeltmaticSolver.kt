@@ -24,11 +24,10 @@ class BeltmaticSolver {
     }
 
     private fun calculateNewAvailableNumbers(availableNumbers: Map<Int, AvailableNumber>): MutableMap<Int, AvailableNumber> {
-        val newNumbers: MutableMap<Int, AvailableNumber> =  mutableMapOf()
+        val newNumbers: MutableMap<Int, AvailableNumber> = mutableMapOf()
         for (a in availableNumbers.values) {
             for (b in availableNumbers.values) {
-                val newNumber = join(a, b)
-                addIfBetter(newNumbers, newNumber)
+                addIfBetter(newNumbers, a.add(b))
             }
         }
         return newNumbers
@@ -47,19 +46,18 @@ class BeltmaticSolver {
             availableNumbers[newNumber.number] = newNumber
         }
     }
-
-    private fun join(a: AvailableNumber, b: AvailableNumber): AvailableNumber {
-        return AvailableNumber(
-            a.number + b.number,
-            "${a.formula} + ${b.formula}", //TODO will need parenthesis here
-            a.formulaOperationsCount + b.formulaOperationsCount
-        )
-    }
-
 }
 
-data class AvailableNumber(
+private data class AvailableNumber(
     val number: Int,
     val formula: String,
     val formulaOperationsCount: Int,
-)
+) {
+
+    fun add(that: AvailableNumber) = AvailableNumber(
+        this.number + that.number,
+        "${this.formula} + ${that.formula}", //TODO will need parenthesis here
+        this.formulaOperationsCount + that.formulaOperationsCount
+    )
+
+}
