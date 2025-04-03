@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.provider.Arguments
 import java.util.stream.Stream
-import javax.script.ScriptEngineManager
 
 @Suppress("UNCHECKED_CAST")
 class BeltmaticSolverTest {
@@ -26,7 +25,7 @@ class BeltmaticSolverTest {
                 val targetNumber = arguments.get()[1] as Int
 
                 val formula = solver.solve(availableNumbers, targetNumber)
-                val result = evaluate(formula)
+                val result = ExpressionEvaluator.evaluate(formula)
 
                 //TODO user proper testing library
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
@@ -47,7 +46,7 @@ class BeltmaticSolverTest {
                 val targetNumber = arguments.get()[1] as Int
 
                 val formula = solver.solve(availableNumbers, targetNumber)
-                val result = evaluate(formula)
+                val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
                 assertEquals(2, operationCount(formula), "Unexpected number of operations: $formula")
@@ -80,7 +79,7 @@ class BeltmaticSolverTest {
 
             DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
-                val result = evaluate(formula)
+                val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
                 assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
@@ -109,7 +108,7 @@ class BeltmaticSolverTest {
 
             DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
-                val result = evaluate(formula)
+                val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
                 assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
@@ -130,24 +129,6 @@ class BeltmaticSolverTest {
         )
     }
 
-    //TODO this does not support infix exponentiation operation, switch to Javaluator: https://javaluator.fathzer.com/en/doc/tutorial.php?chapter=extending
-    @Suppress("MoveVariableDeclarationIntoWhen")
-    private fun evaluate(expression: String): Int {
-        if (expression.contains("/")) {
-            //TODO Need to handle integer division. I.e. "4 / 3 * 6" should 6, not 8.
-            throw IllegalArgumentException("Division is not supported")
-        }
-
-        val engine = ScriptEngineManager().getEngineByName("js")
-        val result = engine.eval(expression)
-
-        // The result might be a Double or another numeric type, so we convert it to Int
-        return when (result) {
-            is Number -> result.toInt()
-            else -> throw IllegalArgumentException("Expression did not evaluate to a number")
-        }
-    }
-
     private fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
 
     private fun verifyExampleFormula(formula: String, availableNumbers: List<Int>, targetNumber: Int, expectedOperations: Int) {
@@ -160,7 +141,7 @@ class BeltmaticSolverTest {
             throw AssertionError("""Example formula "$formula" contains numbers $illegalNumbers which are not in available numbers $availableNumbers""")
         }
 
-        val result = evaluate(formula)
+        val result = ExpressionEvaluator.evaluate(formula)
 
         assertEquals(targetNumber, result, "Example formula does not evaluate to $targetNumber")
         assertEquals(expectedOperations, operationCount(formula), "Example formula contains more operations than expected")
