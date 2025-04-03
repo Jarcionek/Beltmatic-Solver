@@ -42,7 +42,7 @@ class BeltmaticSolverTest {
 
                 //TODO user proper testing library
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
-                assertEquals(1, operationCount(formula), "Unexpected number of operations: $formula")
+                assertEquals(1, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
@@ -62,7 +62,7 @@ class BeltmaticSolverTest {
                 val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
-                assertEquals(2, operationCount(formula), "Unexpected number of operations: $formula")
+                assertEquals(2, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
@@ -88,14 +88,14 @@ class BeltmaticSolverTest {
             val availableNumbers = arguments[1] as List<Int>
             val targetNumber = arguments[2] as Int
             val exampleFormula = arguments[3] as String
-            verifyExampleFormula(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+            FormulaVerifier.verify(exampleFormula, availableNumbers, targetNumber, expectedOperations)
 
             DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
                 val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
-                assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
+                assertEquals(expectedOperations, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
     }
@@ -117,34 +117,16 @@ class BeltmaticSolverTest {
             val availableNumbers = arguments[1] as List<Int>
             val targetNumber = arguments[2] as Int
             val exampleFormula = arguments[3] as String
-            verifyExampleFormula(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+            FormulaVerifier.verify(exampleFormula, availableNumbers, targetNumber, expectedOperations)
 
             DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
                 val result = ExpressionEvaluator.evaluate(formula)
 
                 assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
-                assertEquals(expectedOperations, operationCount(formula), "Unexpected number of operations: $formula")
+                assertEquals(expectedOperations, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
             }
         }
-    }
-
-    private fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
-
-    private fun verifyExampleFormula(formula: String, availableNumbers: List<Int>, targetNumber: Int, expectedOperations: Int) {
-        val illegalNumbers = Regex("\\d+")
-            .findAll(formula)
-            .map { it.value.toInt() }
-            .filter { it !in availableNumbers }
-            .toList()
-        if (illegalNumbers.isNotEmpty()) {
-            throw AssertionError("""Example formula "$formula" contains numbers $illegalNumbers which are not in available numbers $availableNumbers""")
-        }
-
-        val result = ExpressionEvaluator.evaluate(formula)
-
-        assertEquals(targetNumber, result, "Example formula does not evaluate to $targetNumber")
-        assertEquals(expectedOperations, operationCount(formula), "Example formula contains more operations than expected")
     }
 
 }
