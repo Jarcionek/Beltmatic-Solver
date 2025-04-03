@@ -1,7 +1,6 @@
 package uk.co.jpawlak.beltmatic
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -65,6 +64,11 @@ class BeltmaticSolverTest {
             Arguments.of(2, listOf(10, 100, 1000), 890), // 1000 - 100 - 10
             Arguments.of(2, listOf(1000, 100, 10), 890), // 1000 - 100 - 10
             Arguments.of(2, listOf(3, 10, 40), 47), // 40 + 10 - 3
+            Arguments.of(3, listOf(1200, 11, 100, 7), 1104), // (1200 + 11) - (100 + 7) //TODO test all permutations of available numbers?
+            Arguments.of(3, listOf(7, 1200, 11, 100), 1104), // (1200 + 11) - (100 + 7)
+            Arguments.of(3, listOf(100, 7, 1200, 11), 1104), // (1200 + 11) - (100 + 7)
+            Arguments.of(3, listOf(11, 100, 7, 1200), 1104), // (1200 + 11) - (100 + 7)
+            Arguments.of(3, listOf(100, 1200, 7, 11), 1104), // (1200 + 11) - (100 + 7)
         ).map { arguments ->
             DynamicTest.dynamicTest("${arguments.get()[1]} -> ${arguments.get()[2]} in ${arguments.get()[0]} operations") {
                 val expectedOperations = arguments.get()[0] as Int
@@ -85,7 +89,12 @@ class BeltmaticSolverTest {
         val exception = assertThrows(IllegalArgumentException::class.java) {
             solver.solve(listOf(0), 3)
         }
-        assertEquals("Could not find a formula to get 3 using no more than 2 operations", exception.message)
+
+        //TODO user proper testing library
+        assertTrue(
+            exception.message!!.startsWith("Could not find a formula to get 3 using no more than "),
+            "Unexpected exception message: ${exception.message}"
+        )
     }
 
     //TODO this does not support infix exponentiation operation, switch to Javaluator: https://javaluator.fathzer.com/en/doc/tutorial.php?chapter=extending

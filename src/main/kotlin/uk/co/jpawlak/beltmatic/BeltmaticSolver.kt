@@ -1,6 +1,13 @@
 package uk.co.jpawlak.beltmatic
 
-private const val MAX_OPERATIONS = 2
+/**
+ * If the first iteration creates available number (1 + 2),
+ * then second iteration can create available number ((1+2) + (1+2)), which has 3 operations already,
+ * then third iteration can create available number (((1+2) + (1+2)) + ((1+2) + (1+2))), which has 7 operations.
+ *
+ * So max operations is actually equal (2 ^ iterations) - 1
+ */
+private const val MAX_ITERATIONS = 2 //TODO change it to MAX_OPERATIONS
 
 class BeltmaticSolver {
 
@@ -10,17 +17,24 @@ class BeltmaticSolver {
             { AvailableNumber(it, "$it", 0) }
         ).toMutableMap()
 
-        for (i in 1..MAX_OPERATIONS) {
+        for (i in 1..MAX_ITERATIONS) {
+
             calculateNewAvailableNumbers(allAvailableNumbers)
                 .onEach {
+                    //TODO with longer formulas, we should probably finish the iteration to find the best formula, but no test is catching this yet
                     if (it.key == targetNumber) {
                         return it.value.formula
                     }
                 }
                 .forEach { addIfBetter(allAvailableNumbers, it.value) }
+
+//            val formula: String? = allAvailableNumbers[targetNumber]?.formula
+//            if (formula != null) {
+//                return formula
+//            }
         }
 
-        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $MAX_OPERATIONS operations")
+        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $MAX_ITERATIONS iterations")
     }
 
     private fun calculateNewAvailableNumbers(availableNumbers: Map<Int, AvailableNumber>): MutableMap<Int, AvailableNumber> {
