@@ -73,19 +73,19 @@ private data class AvailableNumber(
     fun add(that: AvailableNumber) = AvailableNumber(
         this.number + that.number,
         "(${this.formula}) + (${that.formula})", //TODO too many parenthesis, optimise it
-        this.formulaOperationsCount + that.formulaOperationsCount
+        this.formulaOperationsCount + that.formulaOperationsCount + 1
     )
 
     fun subtract(that: AvailableNumber) = AvailableNumber(
         this.number - that.number,
         "(${this.formula}) - (${that.formula})",
-        this.formulaOperationsCount + that.formulaOperationsCount
+        this.formulaOperationsCount + that.formulaOperationsCount + 1
     )
 
     fun multiply(that: AvailableNumber) = AvailableNumber(
         this.number * that.number,
         "(${this.formula}) * (${that.formula})",
-        this.formulaOperationsCount + that.formulaOperationsCount
+        this.formulaOperationsCount + that.formulaOperationsCount + 1
     )
 
 }

@@ -87,10 +87,10 @@ class BeltmaticSolverTest {
     @TestFactory
     fun `returns formula with multiplications, additions and subtractions only`(): Stream<DynamicTest> {
         return Stream.of(
-            Arguments.of(4, listOf(3, 4, 6, 13), 258), // 13 * 6 * 3 + 4 * 6
+            Arguments.of(3, listOf(3, 4, 6, 13), 258), // (3 * 13 + 4) * 6
             Arguments.of(4, listOf(1, 4, 5, 23), 2301), // 5 * 5 * 4 * 23 + 1
             Arguments.of(5, listOf(1, 2, 9, 11, 19, 24), 4164), // (19 * 9 + 2) * 24 + 11 + 1
-//            Arguments.of(5, listOf(5, 7, 8, 11, 13), 12973), // 13 * 13 * 7 * 11 - 5 * 8 //TODO it is finding it in 6 operations: 5 * (5 - 13) + 7 * 11 * 13 * 13
+            Arguments.of(5, listOf(5, 7, 8, 11, 13), 12973), // 13 * 13 * 7 * 11 - 5 * 8
         ).map { arguments ->
             DynamicTest.dynamicTest("${arguments.get()[1]} -> ${arguments.get()[2]} in ${arguments.get()[0]} operations") {
                 val expectedOperations = arguments.get()[0] as Int
