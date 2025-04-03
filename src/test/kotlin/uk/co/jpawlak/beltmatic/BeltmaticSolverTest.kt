@@ -64,6 +64,7 @@ class BeltmaticSolverTest {
         assertEquals("Could not find a formula to get 3 using no more than 2 operations", exception.message)
     }
 
+    //TODO this does not support infix exponentiation operation, switch to Javaluator: https://javaluator.fathzer.com/en/doc/tutorial.php?chapter=extending
     @Suppress("MoveVariableDeclarationIntoWhen")
     private fun evaluate(expression: String): Int {
         if (expression.contains("/")) {
