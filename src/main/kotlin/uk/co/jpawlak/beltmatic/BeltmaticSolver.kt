@@ -1,5 +1,7 @@
 package uk.co.jpawlak.beltmatic
 
+import kotlin.math.pow
+
 /**
  * If the first iteration creates available number (1 + 2),
  * then second iteration can create available number ((1+2) + (1+2)), which has 3 operations already,
@@ -44,6 +46,9 @@ class BeltmaticSolver {
                 addIfBetter(newNumbers, a.add(b))
                 addIfBetter(newNumbers, a.subtract(b))
                 addIfBetter(newNumbers, a.multiply(b))
+                if (b.number in 2..3) { //TODO without this restriction it runs out of heap
+                    addIfBetter(newNumbers, a.power(b))
+                }
             }
         }
         return newNumbers
@@ -85,6 +90,14 @@ private data class AvailableNumber(
     fun multiply(that: AvailableNumber) = AvailableNumber(
         this.number * that.number,
         "(${this.formula}) * (${that.formula})",
+        this.formulaOperationsCount + that.formulaOperationsCount + 1
+    )
+
+    fun power(that: AvailableNumber) = AvailableNumber(
+        this.number.toDouble().pow(that.number).toInt(), //TODO implement it without casts, handle integer overflow
+        // in the game 24^24 = 2,147,483,647
+        // for negative numbers minimum is -2,147,483,648 (subtracting positive numbers from it results in the same number being returned)
+        "(${this.formula}) ^ (${that.formula})",
         this.formulaOperationsCount + that.formulaOperationsCount + 1
     )
 
