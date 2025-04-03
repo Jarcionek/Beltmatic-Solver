@@ -58,23 +58,27 @@ class BeltmaticSolverTest {
     @TestFactory
     fun `returns formula with additions and subtractions only`(): Stream<DynamicTest> {
         return Stream.of(
-            Arguments.of(1, listOf(7), 0), // 7 - 7
-            Arguments.of(1, listOf(5, 8), 3), // 8 - 5
-            Arguments.of(1, listOf(8, 5), 3), // 8 - 5
-            Arguments.of(2, listOf(10, 100, 1000), 890), // 1000 - 100 - 10
-            Arguments.of(2, listOf(1000, 100, 10), 890), // 1000 - 100 - 10
-            Arguments.of(2, listOf(3, 10, 40), 47), // 40 + 10 - 3
-            Arguments.of(3, listOf(1200, 11, 100, 7), 1104), // (1200 + 11) - (100 + 7) //TODO test all permutations of available numbers?
-            Arguments.of(3, listOf(7, 1200, 11, 100), 1104), // (1200 + 11) - (100 + 7)
-            Arguments.of(3, listOf(100, 7, 1200, 11), 1104), // (1200 + 11) - (100 + 7)
-            Arguments.of(3, listOf(11, 100, 7, 1200), 1104), // (1200 + 11) - (100 + 7)
-            Arguments.of(3, listOf(100, 1200, 7, 11), 1104), // (1200 + 11) - (100 + 7)
-        ).map { arguments ->
-            DynamicTest.dynamicTest("${arguments.get()[1]} -> ${arguments.get()[2]} in ${arguments.get()[0]} operations") {
-                val expectedOperations = arguments.get()[0] as Int
-                val availableNumbers = arguments.get()[1] as List<Int>
-                val targetNumber = arguments.get()[2] as Int
+            Arguments.of(1, listOf(7), 0, "7 - 7"),
+            Arguments.of(1, listOf(5, 8), 3, "8 - 5"),
+            Arguments.of(1, listOf(8, 5), 3, "8 - 5"),
+            Arguments.of(2, listOf(10, 100, 1000), 890, "1000 - 100 - 10"),
+            Arguments.of(2, listOf(1000, 100, 10), 890, "1000 - 100 - 10"),
+            Arguments.of(2, listOf(3, 10, 40), 47, "40 + 10 - 3"),
+            Arguments.of(3, listOf(1200, 11, 100, 7), 1104, "(1200 + 11) - (100 + 7)"),  //TODO test all permutations of available numbers?
+            Arguments.of(3, listOf(7, 1200, 11, 100), 1104, "(1200 + 11) - (100 + 7)"),
+            Arguments.of(3, listOf(100, 7, 1200, 11), 1104, "(1200 + 11) - (100 + 7)"),
+            Arguments.of(3, listOf(11, 100, 7, 1200), 1104, "(1200 + 11) - (100 + 7)"),
+            Arguments.of(3, listOf(100, 1200, 7, 11), 1104, "(1200 + 11) - (100 + 7)"),
+        ).map {
+            val arguments = it.get()
 
+            val expectedOperations = arguments[0] as Int
+            val availableNumbers = arguments[1] as List<Int>
+            val targetNumber = arguments[2] as Int
+            val exampleFormula = arguments[3] as String
+            verifyExampleFormula(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+
+            DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
                 val result = evaluate(formula)
 
@@ -87,19 +91,23 @@ class BeltmaticSolverTest {
     @TestFactory
     fun `returns formula with multiplications, additions and subtractions only`(): Stream<DynamicTest> {
         return Stream.of(
-            Arguments.of(3, listOf(3, 4, 6, 13), 258), // (3 * 13 + 4) * 6
-            Arguments.of(4, listOf(1, 4, 5, 23), 2301), // 5 * 5 * 4 * 23 + 1
-            Arguments.of(5, listOf(1, 2, 9, 11, 19, 24), 4164), // (19 * 9 + 2) * 24 + 11 + 1
-            Arguments.of(5, listOf(5, 7, 8, 11, 13), 12973), // 13 * 13 * 7 * 11 - 5 * 8
-            Arguments.of(3, listOf(3, 13, 16, 19), 3955), // 13 * 16 * 19 + 3
-            Arguments.of(4, listOf(3, 5, 17, 20), 9775), // (3 + 20) * 5 * 5 * 17
-            Arguments.of(5, listOf(1, 11, 20), 830), // ((20 + 20) * 20 + 20 + 11 - 1
-        ).map { arguments ->
-            DynamicTest.dynamicTest("${arguments.get()[1]} -> ${arguments.get()[2]} in ${arguments.get()[0]} operations") {
-                val expectedOperations = arguments.get()[0] as Int
-                val availableNumbers = arguments.get()[1] as List<Int>
-                val targetNumber = arguments.get()[2] as Int
+            Arguments.of(3, listOf(3, 4, 6, 13),         258,   "(3 * 13 + 4) * 6"            ),
+            Arguments.of(4, listOf(1, 4, 5, 23),         2301,  "5 * 5 * 4 * 23 + 1"          ),
+            Arguments.of(5, listOf(1, 2, 9, 11, 19, 24), 4164,  "(19 * 9 + 2) * 24 + 11 + 1"  ),
+            Arguments.of(5, listOf(5, 7, 8, 11, 13),     12973, "13 * 13 * 7 * 11 - 5 * 8"    ),
+            Arguments.of(3, listOf(3, 13, 16, 19),       3955,  "13 * 16 * 19 + 3"            ),
+            Arguments.of(4, listOf(3, 5, 17, 20),        9775,  "(3 + 20) * 5 * 5 * 17"       ),
+            Arguments.of(5, listOf(1, 11, 20),           830,   "(20 + 20) * 20 + 20 + 11 - 1"),
+        ).map {
+            val arguments = it.get()
 
+            val expectedOperations = arguments[0] as Int
+            val availableNumbers = arguments[1] as List<Int>
+            val targetNumber = arguments[2] as Int
+            val exampleFormula = arguments[3] as String
+            verifyExampleFormula(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+
+            DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
                 val formula = solver.solve(availableNumbers, targetNumber)
                 val result = evaluate(formula)
 
@@ -141,5 +149,21 @@ class BeltmaticSolverTest {
     }
 
     private fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
+
+    private fun verifyExampleFormula(formula: String, availableNumbers: List<Int>, targetNumber: Int, expectedOperations: Int) {
+        val illegalNumbers = Regex("\\d+")
+            .findAll(formula)
+            .map { it.value.toInt() }
+            .filter { it !in availableNumbers }
+            .toList()
+        if (illegalNumbers.isNotEmpty()) {
+            throw AssertionError("""Example formula "$formula" contains numbers $illegalNumbers which are not in available numbers $availableNumbers""")
+        }
+
+        val result = evaluate(formula)
+
+        assertEquals(targetNumber, result, "Example formula does not evaluate to $targetNumber")
+        assertEquals(expectedOperations, operationCount(formula), "Example formula contains more operations than expected")
+    }
 
 }
