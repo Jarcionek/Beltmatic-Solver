@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation("com.fathzer:javaluator:3.0.3")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
-    testImplementation("org.openjdk.nashorn:nashorn-core:15.4")
 }
 
 tasks.test {
