@@ -1,0 +1,16 @@
+add some progress reporting
+
+
+OPTIMISATIONS
+
+implement proper max-operations restriction - I have not yet seen a case that requires more than 5
+
+make the application stateful-interactive - a user first enters target number and then keeps adding available numbers they see on the screen
+
+any way to reduce the range of 4B numbers into buckets?
+- don't pick all available numbers at once - pick first and last, try all operations, then add a next number - multiple results, first won't be the best
+
+alternative non-bruteforce algorithm
+- start from target number and try to reach initial numbers
+- find prime factors, add them to the list of targets
+- for each number in the list of targets add/subtract all the initial numbers - add the results to targets
