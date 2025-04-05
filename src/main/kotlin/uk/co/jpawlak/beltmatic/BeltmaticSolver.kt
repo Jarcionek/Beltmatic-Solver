@@ -35,6 +35,9 @@ class BeltmaticSolver(
 
     private fun calculateNewAvailableNumbers(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
         return availableNumbers.asSequence().flatMap { a ->
+            if (Thread.currentThread().isInterrupted) {
+                throw InterruptedException()
+            }
             availableNumbers.asSequence().flatMap { b ->
                 val newNumbers: MutableList<AvailableNumber?> = mutableListOf()
                 //TODO optimize - even if the target number was found, this will continue the whole iteration
