@@ -5,7 +5,6 @@ fun main() {
 
     //TODO performance! this doesn't finish, after 5 minutes it run out of 8GB heap.
     // 1. implement proper max-operations restriction - I have not yet seen a case that requires more than 5
-    // 2. how to prioritise certain operations? we could first try exponentiation to get close to target number, and then what?
     // 3. some progress reporting?
     // 4. make it stateful-interactive - a user first enters target number and then keeps adding available numbers they see on the screen
     // 5. don't pick all available numbers at once - pick first and last, try all operations, then add a next number - multiple results, first won't be the best

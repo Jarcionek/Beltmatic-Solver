@@ -18,6 +18,9 @@ class BeltmaticSolver(
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
         allAvailableNumbers = AvailableNumbers(initiallyAvailableNumbers)
 
+        calculateExponentiationsOnly(allAvailableNumbers.getAll())
+            .forEach { allAvailableNumbers.addIfBetter(it) }
+
         for (i in 1..MAX_ITERATIONS) {
 
             calculateNewAvailableNumbers(allAvailableNumbers.getAll())
@@ -33,24 +36,35 @@ class BeltmaticSolver(
         throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $MAX_ITERATIONS iterations")
     }
 
+    private fun calculateExponentiationsOnly(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
+        return availableNumbers.asSequence().flatMap { a ->
+            checkThreadInterrupted()
+            availableNumbers.asSequence().mapNotNull { b ->
+                availableNumberCalculator.power(a, b)
+            }
+        }
+    }
+
     private fun calculateNewAvailableNumbers(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
         return availableNumbers.asSequence().flatMap { a ->
-            if (Thread.currentThread().isInterrupted) {
-                throw InterruptedException()
-            }
+            checkThreadInterrupted()
             availableNumbers.asSequence().flatMap { b ->
-                val newNumbers: MutableList<AvailableNumber?> = mutableListOf()
                 //TODO optimize - even if the target number was found, this will continue the whole iteration
-                newNumbers.add(availableNumberCalculator.add(a, b))
-                newNumbers.add(availableNumberCalculator.subtract(a, b))
-                newNumbers.add(availableNumberCalculator.multiply(a, b))
-                if (b.number in 2..3) { //TODO without this restriction it runs out of heap
-                    if (a.number < 65536) { // this is 2^31, square it, and we get MAX INT; for cube the limit is around 1625; for ^4 the limit is 256
-                        newNumbers.add(availableNumberCalculator.power(a, b))
-                    }
-                }
-                newNumbers.asSequence().filterNotNull()
+                sequenceOf(
+                    availableNumberCalculator.add(a, b),
+                    availableNumberCalculator.subtract(a, b),
+                    availableNumberCalculator.multiply(a, b),
+                ).filterNotNull()
             }
+        }
+    }
+
+    /**
+     * Calling this method on regular intervals allows the algorithm to be force-stopped.
+     */
+    private fun checkThreadInterrupted() {
+        if (Thread.currentThread().isInterrupted) {
+            throw InterruptedException()
         }
     }
 

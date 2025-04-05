@@ -48,15 +48,26 @@ class AvailableNumberCalculator {
         )
     }
 
-    fun power(a: AvailableNumber, b: AvailableNumber): AvailableNumber? {
-        val result = a.number.toDouble().pow(b.number).toInt() //TODO implement it without casts
+    fun power(base: AvailableNumber, exponent: AvailableNumber): AvailableNumber? {
+        // TODO implement extra optimisations and checks
+        //
+        // maximum base is 65536 this is 2^31, square it, and we get MAX INT
+        // for cube the maximum base is around 1625
+        // for power of four maximum base is 256
+        //
+        // maximum exponent is 32
+        //
+        // consider edge cases around base/exponent being 0 or 1
+        //
+        // consider edge cases around negative base/exponent
+        val result = base.number.toDouble().pow(exponent.number).toInt() //TODO implement it without casts
         if (result < -NUMBER_LIMIT || NUMBER_LIMIT < result) {
             return null
         }
         return AvailableNumber(
             result,
-            "(${a.formula}) ^ (${b.formula})",
-            a.formulaOperationsCount + b.formulaOperationsCount + 1
+            "(${base.formula}) ^ (${exponent.formula})",
+            base.formulaOperationsCount + exponent.formulaOperationsCount + 1
         )
     }
 
