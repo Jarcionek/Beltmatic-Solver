@@ -1,7 +1,5 @@
 package uk.co.jpawlak.beltmatic
 
-import kotlin.math.pow
-
 /**
  * If the first iteration creates available number (1 + 2),
  * then second iteration can create available number ((1+2) + (1+2)), which has 3 operations already,
@@ -11,7 +9,9 @@ import kotlin.math.pow
  */
 private const val MAX_ITERATIONS = 3 //TODO change it to MAX_OPERATIONS
 
-class BeltmaticSolver {
+class BeltmaticSolver(
+    private val availableNumberCalculator: AvailableNumberCalculator = AvailableNumberCalculator()
+) {
 
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
         val allAvailableNumbers: MutableMap<Int, AvailableNumber> = initiallyAvailableNumbers.associateBy(
@@ -43,12 +43,12 @@ class BeltmaticSolver {
         val newNumbers: MutableMap<Int, AvailableNumber> = mutableMapOf()
         for (a in availableNumbers.values) {
             for (b in availableNumbers.values) {
-                addIfBetter(newNumbers, a.add(b))
-                addIfBetter(newNumbers, a.subtract(b))
-                addIfBetter(newNumbers, a.multiply(b))
+                addIfBetter(newNumbers, availableNumberCalculator.add(a, b))
+                addIfBetter(newNumbers, availableNumberCalculator.subtract(a, b))
+                addIfBetter(newNumbers, availableNumberCalculator.multiply(a, b))
                 if (b.number in 2..3) { //TODO without this restriction it runs out of heap
                     if (a.number < 65536) { // this is 2^31, square it, and we get MAX INT; for cube the limit is around 1625; for ^4 the limit is 256
-                        addIfBetter(newNumbers, a.power(b))
+                        addIfBetter(newNumbers, availableNumberCalculator.power(a, b))
                     }
                 }
             }
@@ -71,36 +71,3 @@ class BeltmaticSolver {
     }
 }
 
-private data class AvailableNumber(
-    val number: Int,
-    val formula: String,
-    val formulaOperationsCount: Int,
-) {
-
-    fun add(that: AvailableNumber) = AvailableNumber(
-        this.number + that.number,
-        "(${this.formula}) + (${that.formula})", //TODO too many parenthesis, optimise it
-        this.formulaOperationsCount + that.formulaOperationsCount + 1
-    )
-
-    fun subtract(that: AvailableNumber) = AvailableNumber(
-        this.number - that.number,
-        "(${this.formula}) - (${that.formula})",
-        this.formulaOperationsCount + that.formulaOperationsCount + 1
-    )
-
-    fun multiply(that: AvailableNumber) = AvailableNumber(
-        this.number * that.number,
-        "(${this.formula}) * (${that.formula})",
-        this.formulaOperationsCount + that.formulaOperationsCount + 1
-    )
-
-    fun power(that: AvailableNumber) = AvailableNumber(
-        this.number.toDouble().pow(that.number).toInt(), //TODO implement it without casts, handle integer overflow
-        // in the game 24^24 = 2,147,483,647
-        // for negative numbers minimum is -2,147,483,648 (subtracting positive numbers from it results in the same number being returned)
-        "(${this.formula}) ^ (${that.formula})",
-        this.formulaOperationsCount + that.formulaOperationsCount + 1
-    )
-
-}
