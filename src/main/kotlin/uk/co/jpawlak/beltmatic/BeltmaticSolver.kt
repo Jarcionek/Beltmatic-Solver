@@ -36,7 +36,7 @@ class BeltmaticSolver(
     private fun calculateNewAvailableNumbers(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
         return availableNumbers.asSequence().flatMap { a ->
             availableNumbers.asSequence().flatMap { b ->
-                val newNumbers: MutableList<AvailableNumber> = mutableListOf()
+                val newNumbers: MutableList<AvailableNumber?> = mutableListOf()
                 //TODO optimize - even if the target number was found, this will continue the whole iteration
                 newNumbers.add(availableNumberCalculator.add(a, b))
                 newNumbers.add(availableNumberCalculator.subtract(a, b))
@@ -46,7 +46,7 @@ class BeltmaticSolver(
                         newNumbers.add(availableNumberCalculator.power(a, b))
                     }
                 }
-                newNumbers.asSequence()
+                newNumbers.asSequence().filterNotNull()
             }
         }
     }
