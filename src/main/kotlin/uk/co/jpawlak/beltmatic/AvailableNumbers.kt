@@ -25,4 +25,7 @@ class AvailableNumbers(initiallyAvailableNumbers: List<Int>) {
         return allAvailableNumbers[targetNumber]
     }
 
+    fun getAllWithOperationCountEqualTo(operationCount: Int) =
+        allAvailableNumbers.values.filter { it.formulaOperationsCount == operationCount }
+
 }

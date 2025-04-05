@@ -1,14 +1,5 @@
 package uk.co.jpawlak.beltmatic
 
-/**
- * If the first iteration creates available number (1 + 2),
- * then second iteration can create available number ((1+2) + (1+2)), which has 3 operations already,
- * then third iteration can create available number (((1+2) + (1+2)) + ((1+2) + (1+2))), which has 7 operations.
- *
- * So max operations is actually equal (2 ^ iterations) - 1
- */
-private const val MAX_ITERATIONS = 3 //TODO change it to MAX_OPERATIONS
-
 class BeltmaticSolver(
     private val availableNumberCalculator: AvailableNumberCalculator = AvailableNumberCalculator()
 ) {
@@ -18,22 +9,83 @@ class BeltmaticSolver(
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
         allAvailableNumbers = AvailableNumbers(initiallyAvailableNumbers)
 
-        calculateExponentiationsOnly(allAvailableNumbers.getAll())
-            .forEach { allAvailableNumbers.addIfBetter(it) }
+        // find all numbers obtainable with 1 operation
 
-        for (i in 1..MAX_ITERATIONS) {
+        calculateExponentiationsOnly(
+            allAvailableNumbers.getAll()
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
 
-            calculateNewAvailableNumbers(allAvailableNumbers.getAll())
-                .forEach { allAvailableNumbers.addIfBetter(it) }
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(0)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
 
-            //TODO suboptimal - waiting for the iteration to finish, even if the target number was already found
-            val formula: String? = allAvailableNumbers.get(targetNumber)?.formula
-            if (formula != null) {
-                return formula
-            }
+        allAvailableNumbers.get(targetNumber)?.let {
+            return@solve it.formula
         }
 
-        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $MAX_ITERATIONS iterations")
+        // find all numbers obtainable with 2 operations
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(1)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        allAvailableNumbers.get(targetNumber)?.let {
+            return@solve it.formula
+        }
+
+        // find all numbers obtainable with 3 operations
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(1)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        allAvailableNumbers.get(targetNumber)?.let {
+            return@solve it.formula
+        }
+
+        // find all numbers obtainable with 4 operations
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(3)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(1),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        allAvailableNumbers.get(targetNumber)?.let {
+            return@solve it.formula
+        }
+
+        // find all numbers obtainable with 5 operations
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(4)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(1),
+            allAvailableNumbers.getAllWithOperationCountEqualTo(3)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        calculateNewAvailableNumbers(
+            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
+        ).forEach { allAvailableNumbers.addIfBetter(it) }
+
+        allAvailableNumbers.get(targetNumber)?.let {
+            return@solve it.formula
+        }
+
+        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than 5 operations")
     }
 
     private fun calculateExponentiationsOnly(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
@@ -54,6 +106,21 @@ class BeltmaticSolver(
                     availableNumberCalculator.add(a, b),
                     availableNumberCalculator.subtract(a, b),
                     availableNumberCalculator.multiply(a, b),
+                ).filterNotNull()
+            }
+        }
+    }
+
+    private fun calculateNewAvailableNumbers(listOne: List<AvailableNumber>, listTwo: List<AvailableNumber>): Sequence<AvailableNumber> {
+        return listOne.asSequence().flatMap { a ->
+            checkThreadInterrupted()
+            listTwo.asSequence().flatMap { b ->
+                //TODO optimize - even if the target number was found, this will continue the whole iteration
+                sequenceOf(
+                    availableNumberCalculator.multiply(a, b),
+                    availableNumberCalculator.add(a, b),
+                    availableNumberCalculator.subtract(a, b),
+                    availableNumberCalculator.subtract(b, a),
                 ).filterNotNull()
             }
         }
