@@ -20,6 +20,7 @@ class BeltmaticSolverPerformanceTest {
         val operationsLimit = 3
 
         FormulaVerifier.verify("18 * 21 * 22 + 23", availableNumbers, targetNumber, operationsLimit)
+        FormulaVerifier.verify("2 ^ 13 + 7 * 21", availableNumbers, targetNumber, operationsLimit)
 
         val formula = solver.solve(availableNumbers, targetNumber)
         val result = ExpressionEvaluator.evaluate(formula)
