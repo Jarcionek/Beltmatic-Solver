@@ -4,11 +4,24 @@ import uk.co.jpawlak.beltmatic.ThreadUtils.checkThreadInterrupted
 
 /**
  * Combines two lists of [AvailableNumber]s to produce a new list of [AvailableNumber]s.
+ *
+ * @see Product
  */
 class AvailableNumbersCombiner(
     private val allAvailableNumbers: AvailableNumbers,
     private val calculator: AvailableNumberCalculator,
 ) {
+
+    fun calculateNewAvailableNumbers(product: Product): Sequence<AvailableNumber> {
+        if (product.operationCountOne == product.operationCountTwo) {
+            val list = allAvailableNumbers.getAllWithOperationCountEqualTo(product.operationCountOne)
+            return calculateNewAvailableNumbers(list)
+        } else {
+            val listOne = allAvailableNumbers.getAllWithOperationCountEqualTo(product.operationCountOne)
+            val listTwo = allAvailableNumbers.getAllWithOperationCountEqualTo(product.operationCountTwo)
+            return calculateNewAvailableNumbers(listOne, listTwo)
+        }
+    }
 
     //TODO add unit tests
     /**
@@ -32,7 +45,7 @@ class AvailableNumbersCombiner(
      * both 2 - 3 and 3 - 2. There will be no iteration where a = 3 and b = 2, therefore it performs both operations when
      * a = 2 and b = 3.
      */
-    fun calculateNewAvailableNumbers(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
+    private fun calculateNewAvailableNumbers(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
         return availableNumbers.asSequence().flatMapIndexed { i, a ->
             checkThreadInterrupted()
             availableNumbers.asSequence().drop(i).flatMap { b ->
@@ -52,7 +65,7 @@ class AvailableNumbersCombiner(
      *
      * No shortcuts here. In particular, for commutative properties it needs to perform the operation both ways.
      */
-    fun calculateNewAvailableNumbers(listOne: List<AvailableNumber>, listTwo: List<AvailableNumber>): Sequence<AvailableNumber> {
+    private fun calculateNewAvailableNumbers(listOne: List<AvailableNumber>, listTwo: List<AvailableNumber>): Sequence<AvailableNumber> {
         //TODO assert lists have no duplicates, and their intersection is empty
         return listOne.asSequence().flatMap { a ->
             checkThreadInterrupted()

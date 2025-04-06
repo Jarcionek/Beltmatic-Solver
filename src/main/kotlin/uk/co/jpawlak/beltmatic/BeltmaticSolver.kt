@@ -13,13 +13,11 @@ class BeltmaticSolver(
 
         // find all numbers obtainable with 1 operation
 
-        calculateExponentiationsOnly(
-            allAvailableNumbers.getAll()
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
-
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(0)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
+        sequenceOf(
+            calculateExponentiationsOnly(allAvailableNumbers.getAll()),
+            combiner.calculateNewAvailableNumbers(Product(0, 0))
+        ).flatMap { it }
+            .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
             return@solve it.formula
@@ -27,10 +25,10 @@ class BeltmaticSolver(
 
         // find all numbers obtainable with 2 operations
 
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(1)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
+        sequenceOf(
+            combiner.calculateNewAvailableNumbers(Product(0, 1))
+        ).flatMap { it }
+            .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
             return@solve it.formula
@@ -38,14 +36,11 @@ class BeltmaticSolver(
 
         // find all numbers obtainable with 3 operations
 
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
-
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(1)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
+        sequenceOf(
+            combiner.calculateNewAvailableNumbers(Product(0, 2)),
+            combiner.calculateNewAvailableNumbers(Product(1, 1))
+        ).flatMap { it }
+            .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
             return@solve it.formula
@@ -53,15 +48,11 @@ class BeltmaticSolver(
 
         // find all numbers obtainable with 4 operations
 
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(3)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
-
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(1),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
+        sequenceOf(
+            combiner.calculateNewAvailableNumbers(Product(0, 3)),
+            combiner.calculateNewAvailableNumbers(Product(1, 2))
+        ).flatMap { it }
+            .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
             return@solve it.formula
@@ -69,19 +60,12 @@ class BeltmaticSolver(
 
         // find all numbers obtainable with 5 operations
 
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(0),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(4)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
-
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(1),
-            allAvailableNumbers.getAllWithOperationCountEqualTo(3)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
-
-        combiner.calculateNewAvailableNumbers(
-            allAvailableNumbers.getAllWithOperationCountEqualTo(2)
-        ).forEach { allAvailableNumbers.addIfBetter(it) }
+        sequenceOf(
+            combiner.calculateNewAvailableNumbers(Product(0, 4)),
+            combiner.calculateNewAvailableNumbers(Product(1, 3)),
+            combiner.calculateNewAvailableNumbers(Product(2, 2))
+        ).flatMap { it }
+            .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
             return@solve it.formula
