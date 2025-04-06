@@ -137,7 +137,7 @@ class BeltmaticSolverTest {
         return Stream.of(
             Arguments.of(4, listOf(1, 3, 6, 9),         766,   "9^3 + 6*6 + 1"         ),
             Arguments.of(4, listOf(2, 3, 7, 11),        8770,  "((2 * 3 ^ 7) + 11) * 2"),
-//            Arguments.of(3, listOf(2, 5, 16),           1369,  "(2*16 + 5)^2"          ), //TODO fix it - this is because of the constraint to only use exponentiations on initial numbers
+            Arguments.of(3, listOf(2, 5, 16),           1369,  "(2*16 + 5)^2"          ),
             Arguments.of(4, listOf(2, 3, 5, 13, 23),    1738,  "5^2 * 3*23 + 13"       ),
             Arguments.of(3, listOf(3, 7, 11, 13),       4470,  "7^3 * 13 + 11"         ),
             Arguments.of(4, listOf(2, 3, 7, 8, 19),     7445,  "8*19*7^2 - 3"          ),

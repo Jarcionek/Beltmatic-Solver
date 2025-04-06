@@ -6,7 +6,7 @@ object BeltmaticSolverFactory {
         val calculator = AvailableNumberCalculator()
         val allAvailableNumbers = AvailableNumbers()
         val combiner = AvailableNumbersCombiner(allAvailableNumbers, calculator)
-        return BeltmaticSolver(calculator, allAvailableNumbers, combiner)
+        return BeltmaticSolver(allAvailableNumbers, combiner)
     }
 
 }

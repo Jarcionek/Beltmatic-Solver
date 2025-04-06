@@ -52,6 +52,8 @@ class AvailableNumbersCombiner(
                 sequenceOf(
                     calculator.multiply(a, b),
                     calculator.add(a, b),
+                    calculator.power(a, b),
+                    calculator.power(b, a),
                     calculator.subtract(a, b),
                     calculator.subtract(b, a),
                 ).filterNotNull()
@@ -73,6 +75,8 @@ class AvailableNumbersCombiner(
                 sequenceOf(
                     calculator.multiply(a, b),
                     calculator.add(a, b),
+                    calculator.power(a, b),
+                    calculator.power(b, a),
                     calculator.subtract(a, b),
                     calculator.subtract(b, a),
                 ).filterNotNull()

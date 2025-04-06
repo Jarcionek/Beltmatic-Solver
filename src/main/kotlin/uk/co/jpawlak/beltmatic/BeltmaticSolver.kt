@@ -1,9 +1,6 @@
 package uk.co.jpawlak.beltmatic
 
-import uk.co.jpawlak.beltmatic.ThreadUtils.checkThreadInterrupted
-
 class BeltmaticSolver(
-    private val calculator: AvailableNumberCalculator,
     private val allAvailableNumbers: AvailableNumbers,
     private val combiner: AvailableNumbersCombiner,
 ) {
@@ -14,7 +11,6 @@ class BeltmaticSolver(
         // find all numbers obtainable with 1 operation
 
         sequenceOf(
-            calculateExponentiationsOnly(allAvailableNumbers.getAll()),
             combiner.calculateNewAvailableNumbers(Product(0, 0))
         ).flatMap { it }
             .forEach { allAvailableNumbers.addIfBetter(it) }
@@ -72,15 +68,6 @@ class BeltmaticSolver(
         }
 
         throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than 5 operations")
-    }
-
-    private fun calculateExponentiationsOnly(availableNumbers: List<AvailableNumber>): Sequence<AvailableNumber> {
-        return availableNumbers.asSequence().flatMap { a ->
-            checkThreadInterrupted()
-            availableNumbers.asSequence().mapNotNull { b ->
-                calculator.power(a, b)
-            }
-        }
     }
 
 }
