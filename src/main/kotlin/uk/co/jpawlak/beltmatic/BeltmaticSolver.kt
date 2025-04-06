@@ -1,5 +1,7 @@
 package uk.co.jpawlak.beltmatic
 
+import uk.co.jpawlak.beltmatic.ThreadUtils.checkThreadInterrupted
+
 class BeltmaticSolver(
     private val availableNumberCalculator: AvailableNumberCalculator = AvailableNumberCalculator()
 ) {
@@ -151,15 +153,6 @@ class BeltmaticSolver(
                     availableNumberCalculator.subtract(b, a),
                 ).filterNotNull()
             }
-        }
-    }
-
-    /**
-     * Calling this method on regular intervals allows the algorithm to be force-stopped.
-     */
-    private fun checkThreadInterrupted() {
-        if (Thread.currentThread().isInterrupted) {
-            throw InterruptedException()
         }
     }
 
