@@ -3,13 +3,12 @@ package uk.co.jpawlak.beltmatic
 import uk.co.jpawlak.beltmatic.ThreadUtils.checkThreadInterrupted
 
 class BeltmaticSolver(
-    private val availableNumberCalculator: AvailableNumberCalculator = AvailableNumberCalculator()
+    private val availableNumberCalculator: AvailableNumberCalculator = AvailableNumberCalculator(),
+    private val allAvailableNumbers: AvailableNumbers = AvailableNumbers(),
 ) {
 
-    private lateinit var allAvailableNumbers: AvailableNumbers
-
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
-        allAvailableNumbers = AvailableNumbers(initiallyAvailableNumbers)
+        allAvailableNumbers.reset(initiallyAvailableNumbers)
 
         // find all numbers obtainable with 1 operation
 

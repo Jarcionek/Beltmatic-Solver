@@ -1,16 +1,22 @@
 package uk.co.jpawlak.beltmatic
 
-class AvailableNumbers(initiallyAvailableNumbers: List<Int>) {
+class AvailableNumbers() {
 
-    private val allAvailableNumbers: MutableMap<Int, AvailableNumber> = initiallyAvailableNumbers.associateBy(
-        { it },
-        { AvailableNumber(it, "$it", 0) }
-    ).toMutableMap()
+    private val allAvailableNumbers: MutableMap<Int, AvailableNumber> = mutableMapOf()
+
+    /**
+     * Used for initialisation. Wipes all the number collected so far.
+     */
+    fun reset(initiallyAvailableNumbers: List<Int>) {
+        allAvailableNumbers.clear()
+        initiallyAvailableNumbers
+            .map { AvailableNumber(it, "$it", 0) }
+            .forEach { allAvailableNumbers[it.number] = it }
+    }
 
     /**
      * If [newNumber] has smaller operation count than the already existing [AvailableNumber]
-     * (or if no such number already exists),
-     * stores the [newNumber] in [AvailableNumbers].
+     * (or if no such number already exists), stores the [newNumber].
      */
     fun addIfBetter(newNumber: AvailableNumber) {
         val oldNumber = allAvailableNumbers[newNumber.number]
