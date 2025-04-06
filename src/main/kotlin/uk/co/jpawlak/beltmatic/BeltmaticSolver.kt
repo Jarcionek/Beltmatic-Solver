@@ -3,9 +3,9 @@ package uk.co.jpawlak.beltmatic
 import uk.co.jpawlak.beltmatic.ThreadUtils.checkThreadInterrupted
 
 class BeltmaticSolver(
-    private val calculator: AvailableNumberCalculator = AvailableNumberCalculator(),
-    private val allAvailableNumbers: AvailableNumbers = AvailableNumbers(),
-    private val combiner: AvailableNumbersCombiner = AvailableNumbersCombiner(allAvailableNumbers, calculator)
+    private val calculator: AvailableNumberCalculator,
+    private val allAvailableNumbers: AvailableNumbers,
+    private val combiner: AvailableNumbersCombiner,
 ) {
 
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {

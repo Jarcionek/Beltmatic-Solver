@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 class BeltmaticSolverPerformanceTest {
 
-    private val solver = BeltmaticSolver()
+    private val solver = BeltmaticSolverFactory.create()
 
     /**
      * Best result: instant (with 100k max number limit)

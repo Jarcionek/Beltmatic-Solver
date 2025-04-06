@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 @Timeout(value = 30, unit = TimeUnit.SECONDS)
 class BeltmaticSolverOperationPreferenceTest {
 
-    private val solver = BeltmaticSolver()
+    private val solver = BeltmaticSolverFactory.create()
 
     @Test
     fun `3955 is solved with multiplications and additions only`() {

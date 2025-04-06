@@ -10,7 +10,7 @@ import java.util.stream.Stream
 @Suppress("UNCHECKED_CAST")
 class BeltmaticSolverTest {
 
-    private val solver = BeltmaticSolver()
+    private val solver = BeltmaticSolverFactory.create()
 
     @Test
     fun `throws exception when it was not possible to find a formula`() {
