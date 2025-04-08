@@ -10,7 +10,7 @@ class BeltmaticSolverPerformanceTest {
     private val solver = BeltmaticSolverFactory.create()
 
     /**
-     * Best result: instant (with 100k max number limit)
+     * Best result: 200ms (with 1M max number limit)
      */
     @Test
     @Timeout(value = 120, unit = TimeUnit.SECONDS)
