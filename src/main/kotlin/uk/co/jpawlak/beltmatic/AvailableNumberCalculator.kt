@@ -1,5 +1,6 @@
 package uk.co.jpawlak.beltmatic
 
+import uk.co.jpawlak.beltmatic.Operation.*
 import kotlin.math.pow
 
 //TODO handle integer overflow
@@ -19,6 +20,7 @@ class AvailableNumberCalculator {
         }
         return AvailableNumber(
             result,
+            ADDITION,
             "(${a.formula}) + (${b.formula})", //TODO too many parenthesis, optimise it
             a.formulaOperationsCount + b.formulaOperationsCount + 1
         )
@@ -31,6 +33,7 @@ class AvailableNumberCalculator {
         }
         return AvailableNumber(
             result,
+            SUBTRACTION,
             "(${a.formula}) - (${b.formula})",
             a.formulaOperationsCount + b.formulaOperationsCount + 1
         )
@@ -43,6 +46,7 @@ class AvailableNumberCalculator {
         }
         return AvailableNumber(
             result,
+            MULTIPLICATION,
             "(${a.formula}) * (${b.formula})",
             a.formulaOperationsCount + b.formulaOperationsCount + 1
         )
@@ -66,6 +70,7 @@ class AvailableNumberCalculator {
         }
         return AvailableNumber(
             result,
+            EXPONENTIATION,
             "(${base.formula}) ^ (${exponent.formula})",
             base.formulaOperationsCount + exponent.formulaOperationsCount + 1
         )

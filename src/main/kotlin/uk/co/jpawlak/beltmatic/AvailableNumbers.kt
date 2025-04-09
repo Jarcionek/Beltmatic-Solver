@@ -10,7 +10,7 @@ class AvailableNumbers() {
     fun reset(initiallyAvailableNumbers: List<Int>) {
         allAvailableNumbers.clear()
         initiallyAvailableNumbers
-            .map { AvailableNumber(it, "$it", 0) }
+            .map { AvailableNumber(it, null, "$it", 0) }
             .forEach { allAvailableNumbers[it.number] = it }
     }
 
@@ -20,9 +20,33 @@ class AvailableNumbers() {
      */
     fun addIfBetter(newNumber: AvailableNumber) {
         val oldNumber = allAvailableNumbers[newNumber.number]
-        if (oldNumber == null || newNumber.formulaOperationsCount < oldNumber.formulaOperationsCount) {
-            allAvailableNumbers[newNumber.number] = newNumber
+
+        if (oldNumber == null) {
+            put(newNumber)
+            return
         }
+
+        if (oldNumber.operation == null) {
+            // this is an initial number, new number cannot be better
+            return
+        }
+
+        if (newNumber.formulaOperationsCount < oldNumber.formulaOperationsCount) {
+            put(newNumber)
+            return
+        }
+
+        if (
+            newNumber.formulaOperationsCount == oldNumber.formulaOperationsCount
+            && newNumber.operation!!.preference > oldNumber.operation.preference
+        ) {
+            put(newNumber)
+            return
+        }
+    }
+
+    private fun put(newNumber: AvailableNumber) {
+        allAvailableNumbers[newNumber.number] = newNumber
     }
 
     fun getAll() = allAvailableNumbers.values.toList()

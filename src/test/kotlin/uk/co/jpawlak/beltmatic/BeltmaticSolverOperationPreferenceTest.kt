@@ -60,4 +60,42 @@ class BeltmaticSolverOperationPreferenceTest {
             "Formula should contain exactly one exponentiation and no subtractions: $formula")
     }
 
+    @Test
+    fun `56739 is solved with only one exponentiation and no subtractions`() {
+        val availableNumbers: List<Int> = (1..9) + (11..24)
+        val targetNumber = 56739
+        val operationsLimit = 4
+
+        FormulaVerifier.verify("5 * 23^3 - 2^12", availableNumbers, targetNumber, operationsLimit)
+        FormulaVerifier.verify("5 * 19 + (14 * 17)^2", availableNumbers, targetNumber, operationsLimit)
+
+        val formula = solver.solve(availableNumbers, targetNumber)
+        val result = ExpressionEvaluator.evaluate(formula)
+
+        assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+        assertEquals(operationsLimit, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
+
+        assertTrue(formula.count { it == '^' } == 1 && !formula.contains('-'),
+            "Formula should contain exactly one exponentiation and no subtractions: $formula")
+    }
+
+    @Test
+    fun `94756 is solved with only one exponentiation and no subtractions`() {
+        val availableNumbers: List<Int> = (1..9) + (11..24)
+        val targetNumber = 94756
+        val operationsLimit = 4
+
+        FormulaVerifier.verify("23 * (24 + 2^12) - 4", availableNumbers, targetNumber, operationsLimit)
+        FormulaVerifier.verify("19 + 23 * (23 + 2^12)", availableNumbers, targetNumber, operationsLimit)
+
+        val formula = solver.solve(availableNumbers, targetNumber)
+        val result = ExpressionEvaluator.evaluate(formula)
+
+        assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+        assertEquals(operationsLimit, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
+
+        assertTrue(formula.count { it == '^' } == 1 && !formula.contains('-'),
+            "Formula should contain exactly one exponentiation and no subtractions: $formula")
+    }
+
 }
