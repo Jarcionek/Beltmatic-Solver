@@ -18,14 +18,15 @@ class FormulaCreator {
 
         val operation = number.operation!!
         val symbol = number.operation.symbol
+        //TODO rename a/b and one/two to left/right
         val a = createFormula(number.sourceNumberOne!!)
         val b = createFormula(number.sourceNumberTwo!!)
 
         val outMostOperationOfA = outMostOperation(a)
         val outMostOperationOfB = outMostOperation(b)
 
-        val aNeedsParentheses = outMostOperationOfA != null && outMostOperationOfA.precedence < operation.precedence
-        val bNeedsParentheses = outMostOperationOfB != null && (outMostOperationOfB.precedence < operation.precedence || (outMostOperationOfB.precedence == operation.precedence && operation == SUBTRACTION))
+        val aNeedsParentheses = leftSideNeedsParentheses(outMostOperationOfA, operation)
+        val bNeedsParentheses = rightSideNeedsParentheses(outMostOperationOfB, operation)
 
         val aSubFormula = if (aNeedsParentheses) "($a)" else a
         val bSubFormula = if (bNeedsParentheses) "($b)" else b
@@ -33,6 +34,27 @@ class FormulaCreator {
 
         val result = "$aSubFormula$symbolSubFormula$bSubFormula"
         return result
+    }
+
+    private fun leftSideNeedsParentheses(
+        outMostOperationOfA: Operation?,
+        operation: Operation
+    ): Boolean {
+        if (outMostOperationOfA != null) {
+            if (outMostOperationOfA.precedence < operation.precedence) return true
+        }
+        return false
+    }
+
+    private fun rightSideNeedsParentheses(
+        outMostOperationOfB: Operation?,
+        operation: Operation
+    ): Boolean {
+        if (outMostOperationOfB != null) {
+            if (outMostOperationOfB.precedence < operation.precedence) return true
+            if (outMostOperationOfB.precedence == operation.precedence && operation == SUBTRACTION) return true
+        }
+        return false
     }
 
     //TODO extract it and unit test it!
