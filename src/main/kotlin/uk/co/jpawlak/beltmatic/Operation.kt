@@ -17,5 +17,14 @@ enum class Operation(
     MULTIPLICATION('*', 2, 2),
 //    DIVISION('/', 2, 1), // TODO implement division (will need to increment the max number limit)
     ADDITION('+', 1, 2),
-    SUBTRACTION('-', 1, 1)
+    SUBTRACTION('-', 1, 1);
+
+    companion object {
+
+        fun fromSymbol(symbol: Char): Operation {
+            return entries.find { it.symbol == symbol } ?: throw IllegalArgumentException("Unknown operation: $symbol")
+        }
+
+    }
+
 }

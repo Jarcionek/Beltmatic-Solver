@@ -2,14 +2,12 @@ package uk.co.jpawlak.beltmatic
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 /**
  * This test focuses on checking that only necessary parentheses are present. For example, `3 + 4` should be returned,
  * instead of `(3) + (4)` or `(3 + 4)`.
  */
-@Disabled
 class BeltmaticSolverParenthesesRedundancyTest {
 
     private val solver = BeltmaticSolverFactory.create()
