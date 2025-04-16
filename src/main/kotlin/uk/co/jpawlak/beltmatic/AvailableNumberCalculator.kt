@@ -1,14 +1,13 @@
 package uk.co.jpawlak.beltmatic
 
 import uk.co.jpawlak.beltmatic.AvailableNumber.Companion.availableNumber
+import uk.co.jpawlak.beltmatic.Config.NUMBER_LIMIT
 import uk.co.jpawlak.beltmatic.Operation.*
 import kotlin.math.pow
 
 //TODO handle integer overflow
 // in the game 24^24 = 2,147,483,647
 // for negative numbers minimum is -2,147,483,648 (subtracting positive numbers from it results in the same number being returned)
-private const val NUMBER_LIMIT = 1_000_000
-
 /**
  * Merges two numbers, using provided operations, to calculate new numbers.
  */
