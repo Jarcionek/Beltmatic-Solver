@@ -5,13 +5,7 @@ import uk.co.jpawlak.beltmatic.Operation.SUBTRACTION
 
 class FormulaCreator {
 
-    fun createFormula(targetNumber: AvailableNumber): String {
-        val formula = internalCreateFormula(targetNumber)
-
-        return formula
-    }
-
-    private fun internalCreateFormula(number: AvailableNumber): String {
+    fun createFormula(number: AvailableNumber): String {
         if (number.isInitialNumber()) {
             return "${number.number}"
         }
