@@ -4,12 +4,7 @@ add some progress reporting
 implement collections of various formulas leading to the same result
 
 
-prefer multiplications and additions over other operations - these machines are easier to place in the game
-
-
 OPTIMISATIONS
-
-implement proper max-operations restriction - I have not yet seen a case that requires more than 5
 
 make the application stateful-interactive - a user first enters target number and then keeps adding available numbers they see on the screen
 

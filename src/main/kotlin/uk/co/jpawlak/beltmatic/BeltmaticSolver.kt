@@ -1,7 +1,10 @@
 package uk.co.jpawlak.beltmatic
 
+import uk.co.jpawlak.beltmatic.Config.OPERATIONS_LIMIT
+
 class BeltmaticSolver(
     private val allAvailableNumbers: AvailableNumbers,
+    private val productSplitter: ProductSplitter,
     private val combiner: AvailableNumbersCombiner,
     private val formulaCreator: FormulaCreator,
 ) {
@@ -9,66 +12,21 @@ class BeltmaticSolver(
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
         allAvailableNumbers.reset(initiallyAvailableNumbers)
 
-        // find all numbers obtainable with 1 operation
+        for (operationsLimit in 1 .. OPERATIONS_LIMIT) {
 
-        sequenceOf(
-            combiner.calculateNewAvailableNumbers(Product(0, 0))
-        ).flatMap { it }
-            .forEach { allAvailableNumbers.addIfBetter(it) }
+            productSplitter.split(operationsLimit)
+                .flatMap { combiner.calculateNewAvailableNumbers(it) }
+                .forEach { allAvailableNumbers.addIfBetter(it) }
 
-        allAvailableNumbers.get(targetNumber)?.let {
-            return@solve formulaCreator.createFormula(it)
+            //TODO optimisation - we wait for the whole iteration before returning a solution
+            // however it will be the best solution, e.g. 3+4 instead of 8-1 (see Operation preference)
+            // we could inject a listener to notify about the first find, but keep searching for better solutions
+            allAvailableNumbers.get(targetNumber)?.let {
+                return@solve formulaCreator.createFormula(it)
+            }
         }
 
-        // find all numbers obtainable with 2 operations
-
-        sequenceOf(
-            combiner.calculateNewAvailableNumbers(Product(0, 1))
-        ).flatMap { it }
-            .forEach { allAvailableNumbers.addIfBetter(it) }
-
-        allAvailableNumbers.get(targetNumber)?.let {
-            return@solve formulaCreator.createFormula(it)
-        }
-
-        // find all numbers obtainable with 3 operations
-
-        sequenceOf(
-            combiner.calculateNewAvailableNumbers(Product(0, 2)),
-            combiner.calculateNewAvailableNumbers(Product(1, 1))
-        ).flatMap { it }
-            .forEach { allAvailableNumbers.addIfBetter(it) }
-
-        allAvailableNumbers.get(targetNumber)?.let {
-            return@solve formulaCreator.createFormula(it)
-        }
-
-        // find all numbers obtainable with 4 operations
-
-        sequenceOf(
-            combiner.calculateNewAvailableNumbers(Product(0, 3)),
-            combiner.calculateNewAvailableNumbers(Product(1, 2))
-        ).flatMap { it }
-            .forEach { allAvailableNumbers.addIfBetter(it) }
-
-        allAvailableNumbers.get(targetNumber)?.let {
-            return@solve formulaCreator.createFormula(it)
-        }
-
-        // find all numbers obtainable with 5 operations
-
-        sequenceOf(
-            combiner.calculateNewAvailableNumbers(Product(0, 4)),
-            combiner.calculateNewAvailableNumbers(Product(1, 3)),
-            combiner.calculateNewAvailableNumbers(Product(2, 2))
-        ).flatMap { it }
-            .forEach { allAvailableNumbers.addIfBetter(it) }
-
-        allAvailableNumbers.get(targetNumber)?.let {
-            return@solve formulaCreator.createFormula(it)
-        }
-
-        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than 5 operations")
+        throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than $OPERATIONS_LIMIT operations")
     }
 
 }

@@ -3,8 +3,23 @@ package uk.co.jpawlak.beltmatic
 object Config {
     /**
      * The solver will never create numbers bigger than this limit, or lower than negative value of this limit.
+     *
+     * Increasing this limit might result in finding a solution with fewer operations, however it will take
+     * longer to find any solution.
      */
     const val NUMBER_LIMIT = 1_000_000
+
+    /**
+     * The solver will try to find the solution with the fewest possible operations. If it cannot find
+     * a solution with N operations, it will search for different solutions that use N+1 operations.
+     *
+     * If it cannot find a solution with a number of operations lower or equal to this limit, an exception
+     * will be thrown.
+     *
+     * Increasing this limit does not affect performance. It simply defines how long to keep searching
+     * before giving up.
+     */
+    const val OPERATIONS_LIMIT = 5
 }
 
 fun main() {
