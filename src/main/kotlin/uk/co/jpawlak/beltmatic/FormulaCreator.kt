@@ -18,43 +18,38 @@ class FormulaCreator {
 
         val operation = number.operation!!
         val symbol = number.operation.symbol
-        //TODO rename a/b and one/two to left/right
-        val a = createFormula(number.sourceNumberOne!!)
-        val b = createFormula(number.sourceNumberTwo!!)
+        val leftFormula = createFormula(number.leftNumber!!)
+        val rightFormula = createFormula(number.rightNumber!!)
 
-        val outMostOperationOfA = outMostOperation(a)
-        val outMostOperationOfB = outMostOperation(b)
+        val leftSideNeedsParentheses = leftSideNeedsParentheses(outMostOperation(leftFormula), operation)
+        val rightSideNeedsParentheses = rightSideNeedsParentheses(outMostOperation(rightFormula), operation)
 
-        val aNeedsParentheses = leftSideNeedsParentheses(outMostOperationOfA, operation)
-        val bNeedsParentheses = rightSideNeedsParentheses(outMostOperationOfB, operation)
+        val leftFormulaWithParentheses = if (leftSideNeedsParentheses) "($leftFormula)" else leftFormula
+        val rightFormulaWithParentheses = if (rightSideNeedsParentheses) "($rightFormula)" else rightFormula
+        val operationWithSpacesAround = if (operation == EXPONENTIATION) symbol else " $symbol "
 
-        val aSubFormula = if (aNeedsParentheses) "($a)" else a
-        val bSubFormula = if (bNeedsParentheses) "($b)" else b
-        val symbolSubFormula = if (operation == EXPONENTIATION) symbol else " $symbol "
-
-        val result = "$aSubFormula$symbolSubFormula$bSubFormula"
-        return result
+        return "$leftFormulaWithParentheses$operationWithSpacesAround$rightFormulaWithParentheses"
     }
 
     private fun leftSideNeedsParentheses(
-        outMostOperationOfA: Operation?,
+        leftSubFormulaOperation: Operation?,
         operation: Operation
     ): Boolean {
-        if (outMostOperationOfA != null) {
-            if (outMostOperationOfA == EXPONENTIATION && operation == EXPONENTIATION) return true
-            if (outMostOperationOfA.precedence < operation.precedence) return true
+        if (leftSubFormulaOperation != null) {
+            if (leftSubFormulaOperation == EXPONENTIATION && operation == EXPONENTIATION) return true
+            if (leftSubFormulaOperation.precedence < operation.precedence) return true
         }
         return false
     }
 
     private fun rightSideNeedsParentheses(
-        outMostOperationOfB: Operation?,
+        rightSubFormulaOperation: Operation?,
         operation: Operation
     ): Boolean {
-        if (outMostOperationOfB != null) {
-            if (outMostOperationOfB == EXPONENTIATION && operation == EXPONENTIATION) return true
-            if (outMostOperationOfB.precedence < operation.precedence) return true
-            if (outMostOperationOfB.precedence == operation.precedence && operation == SUBTRACTION) return true
+        if (rightSubFormulaOperation != null) {
+            if (rightSubFormulaOperation == EXPONENTIATION && operation == EXPONENTIATION) return true
+            if (rightSubFormulaOperation.precedence < operation.precedence) return true
+            if (rightSubFormulaOperation.precedence == operation.precedence && operation == SUBTRACTION) return true
         }
         return false
     }

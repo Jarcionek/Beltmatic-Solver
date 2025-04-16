@@ -4,8 +4,8 @@ package uk.co.jpawlak.beltmatic
 data class AvailableNumber private constructor(
     val number: Int,
     val operation: Operation?,
-    val sourceNumberOne: AvailableNumber?,
-    val sourceNumberTwo: AvailableNumber?,
+    val leftNumber: AvailableNumber?,
+    val rightNumber: AvailableNumber?,
     val formulaOperationsCount: Int,
 ) {
 
@@ -15,8 +15,8 @@ data class AvailableNumber private constructor(
             return AvailableNumber(
                 number = number,
                 operation = null,
-                sourceNumberOne = null,
-                sourceNumberTwo = null,
+                leftNumber = null,
+                rightNumber = null,
                 formulaOperationsCount = 0
             )
         }
@@ -24,15 +24,15 @@ data class AvailableNumber private constructor(
         fun availableNumber(
             resultNumber: Int,
             operation: Operation,
-            sourceNumberOne: AvailableNumber,
-            sourceNumberTwo: AvailableNumber
+            leftNumber: AvailableNumber,
+            rightNumber: AvailableNumber
         ): AvailableNumber {
             return AvailableNumber(
                 number = resultNumber,
                 operation = operation,
-                sourceNumberOne = sourceNumberOne,
-                sourceNumberTwo = sourceNumberTwo,
-                formulaOperationsCount = sourceNumberOne.formulaOperationsCount + sourceNumberTwo.formulaOperationsCount + 1
+                leftNumber = leftNumber,
+                rightNumber = rightNumber,
+                formulaOperationsCount = leftNumber.formulaOperationsCount + rightNumber.formulaOperationsCount + 1
             )
         }
 
