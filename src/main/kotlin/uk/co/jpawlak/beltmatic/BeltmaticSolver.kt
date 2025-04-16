@@ -3,6 +3,7 @@ package uk.co.jpawlak.beltmatic
 class BeltmaticSolver(
     private val allAvailableNumbers: AvailableNumbers,
     private val combiner: AvailableNumbersCombiner,
+    private val formulaCreator: FormulaCreator,
 ) {
 
     fun solve(initiallyAvailableNumbers: List<Int>, targetNumber: Int): String {
@@ -16,7 +17,7 @@ class BeltmaticSolver(
             .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
-            return@solve it.formula
+            return@solve formulaCreator.createFormula(it)
         }
 
         // find all numbers obtainable with 2 operations
@@ -27,7 +28,7 @@ class BeltmaticSolver(
             .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
-            return@solve it.formula
+            return@solve formulaCreator.createFormula(it)
         }
 
         // find all numbers obtainable with 3 operations
@@ -39,7 +40,7 @@ class BeltmaticSolver(
             .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
-            return@solve it.formula
+            return@solve formulaCreator.createFormula(it)
         }
 
         // find all numbers obtainable with 4 operations
@@ -51,7 +52,7 @@ class BeltmaticSolver(
             .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
-            return@solve it.formula
+            return@solve formulaCreator.createFormula(it)
         }
 
         // find all numbers obtainable with 5 operations
@@ -64,7 +65,7 @@ class BeltmaticSolver(
             .forEach { allAvailableNumbers.addIfBetter(it) }
 
         allAvailableNumbers.get(targetNumber)?.let {
-            return@solve it.formula
+            return@solve formulaCreator.createFormula(it)
         }
 
         throw IllegalArgumentException("Could not find a formula to get $targetNumber using no more than 5 operations")

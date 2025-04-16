@@ -1,5 +1,7 @@
 package uk.co.jpawlak.beltmatic
 
+import uk.co.jpawlak.beltmatic.AvailableNumber.Companion.initialNumber
+
 class AvailableNumbers() {
 
     private val allAvailableNumbers: MutableMap<Int, AvailableNumber> = mutableMapOf()
@@ -10,7 +12,7 @@ class AvailableNumbers() {
     fun reset(initiallyAvailableNumbers: List<Int>) {
         allAvailableNumbers.clear()
         initiallyAvailableNumbers
-            .map { AvailableNumber(it, null, "$it", 0) }
+            .map { initialNumber(it) }
             .forEach { allAvailableNumbers[it.number] = it }
     }
 

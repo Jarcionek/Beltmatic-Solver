@@ -1,6 +1,7 @@
 package uk.co.jpawlak.beltmatic
 
 enum class Operation(
+    val symbol: Char,
     /**
      * Defines in which order the operations are executed in an expression without parentheses.
      * Higher value means that it's first.
@@ -12,9 +13,9 @@ enum class Operation(
      */
     val preference: Int,
 ) {
-    EXPONENTIATION(3, 1),
-    MULTIPLICATION(2, 2),
-//    DIVISION(2, 1), // TODO implement division (will need to increment the max number limit)
-    ADDITION(1, 2),
-    SUBTRACTION(1, 1)
+    EXPONENTIATION('^', 3, 1),
+    MULTIPLICATION('*', 2, 2),
+//    DIVISION('/', 2, 1), // TODO implement division (will need to increment the max number limit)
+    ADDITION('+', 1, 2),
+    SUBTRACTION('-', 1, 1)
 }
