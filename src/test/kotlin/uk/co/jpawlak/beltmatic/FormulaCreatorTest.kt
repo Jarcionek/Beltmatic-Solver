@@ -88,7 +88,7 @@ class FormulaCreatorTest {
     @TestFactory
     fun `parentheses on the right expression are present if they would change the result of the expression`(): Stream<DynamicTest> {
         return Stream.of(
-//            Arguments.of('^', '^', true), // although not needed, let's add for clarity // TODO implement it!
+            Arguments.of('^', '^', true), // although not needed, let's add for clarity
             Arguments.of('^', '*', true),
 //            Arguments.of('^', '/', true), // TODO uncomment once division is implemented
             Arguments.of('^', '+', true),
@@ -162,7 +162,7 @@ class FormulaCreatorTest {
     @TestFactory
     fun `parentheses on the left expression are present if they would change the result of the expression`(): Stream<DynamicTest> {
         return Stream.of(
-//            Arguments.of('^', '^', true), // although not needed, let's add for clarity // TODO implement it!
+            Arguments.of('^', '^', true), // although not needed, let's add for clarity
             Arguments.of('^', '*', false),
 //            Arguments.of('^', '/', false), // TODO uncomment once division is implemented
             Arguments.of('^', '+', false),

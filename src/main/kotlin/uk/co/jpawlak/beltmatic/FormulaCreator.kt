@@ -41,6 +41,7 @@ class FormulaCreator {
         operation: Operation
     ): Boolean {
         if (outMostOperationOfA != null) {
+            if (outMostOperationOfA == EXPONENTIATION && operation == EXPONENTIATION) return true
             if (outMostOperationOfA.precedence < operation.precedence) return true
         }
         return false
@@ -51,6 +52,7 @@ class FormulaCreator {
         operation: Operation
     ): Boolean {
         if (outMostOperationOfB != null) {
+            if (outMostOperationOfB == EXPONENTIATION && operation == EXPONENTIATION) return true
             if (outMostOperationOfB.precedence < operation.precedence) return true
             if (outMostOperationOfB.precedence == operation.precedence && operation == SUBTRACTION) return true
         }
