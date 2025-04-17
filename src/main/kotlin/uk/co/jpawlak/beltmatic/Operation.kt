@@ -10,15 +10,15 @@ enum class Operation(
     /**
      * Beltmatic's Adder and Multiplier machines are easier to place, as they are symmetrical.
      * Divider machine is the worst, as it requires extra machines to destroy the remainder.
-     * If multiple solutions are available, the algorithm should prefer operations with the higher preference.
+     * If multiple solutions are available, the algorithm should prefer operations with the lowest cost.
      */
-    val preference: Int,
+    val cost: Int,
 ) {
-    EXPONENTIATION('^', 3, 2),
-    MULTIPLICATION('*', 2, 3),
-    DIVISION('/', 2, 1),
-    ADDITION('+', 1, 3),
-    SUBTRACTION('-', 1, 2);
+    EXPONENTIATION('^', 3, 10),
+    MULTIPLICATION('*', 2, 1),
+    DIVISION('/', 2, 100),
+    ADDITION('+', 1, 1),
+    SUBTRACTION('-', 1, 10);
 
     companion object {
 

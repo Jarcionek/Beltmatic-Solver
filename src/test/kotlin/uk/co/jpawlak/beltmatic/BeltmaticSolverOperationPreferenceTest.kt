@@ -2,7 +2,6 @@ package uk.co.jpawlak.beltmatic
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.util.concurrent.TimeUnit
@@ -43,13 +42,14 @@ class BeltmaticSolverOperationPreferenceTest {
     }
 
     @Test
-    fun `40137 is solved with only one exponentiation and no subtractions`() {
+    fun `40137 is solved with only additions and multiplications (and no parentheses)`() {
         val availableNumbers: List<Int> = (1..9) + (11..24)
         val targetNumber = 40137
         val operationsLimit = 4
 
         FormulaVerifier.verify("12^3 - (7 - 14^4)", availableNumbers, targetNumber, operationsLimit) // BAD
-        FormulaVerifier.verify("(12^3 + 17) * 23 + 2", availableNumbers, targetNumber, operationsLimit) // GOOD
+        FormulaVerifier.verify("(12^3 + 17) * 23 + 2", availableNumbers, targetNumber, operationsLimit) // BAD
+        FormulaVerifier.verify("6 + 7 * 13 * 21 * 21", availableNumbers, targetNumber, operationsLimit) // GOOD
 
         val formula = solver.solve(availableNumbers, targetNumber)
         val result = ExpressionEvaluator.evaluate(formula)
@@ -57,8 +57,15 @@ class BeltmaticSolverOperationPreferenceTest {
         assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
         assertEquals(operationsLimit, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
 
-        assertTrue(formula.count { it == '^' } == 1 && !formula.contains('-'),
-            "Formula should contain exactly one exponentiation and no subtractions: $formula")
+        assertTrue(
+            !formula.contains('^') && !formula.contains('-') && !formula.contains('/'),
+            "Formula should only contain multiplications and additions: $formula"
+        )
+
+        assertTrue(
+            !formula.contains('(') && !formula.contains(')'),
+            "Formula should not contain any parentheses: $formula"
+        )
     }
 
     @Test
@@ -80,7 +87,6 @@ class BeltmaticSolverOperationPreferenceTest {
             "Formula should contain exactly one exponentiation and no subtractions: $formula")
     }
 
-    @Disabled // TODO fix it!
     @Test
     fun `94756 is solved with only one exponentiation and no subtractions`() {
         val availableNumbers: List<Int> = (1..9) + (11..24)

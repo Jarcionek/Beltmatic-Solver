@@ -1,10 +1,11 @@
 package uk.co.jpawlak.beltmatic
 
+import uk.co.jpawlak.beltmatic.AvailableNumber.Companion.availableNumber
 import uk.co.jpawlak.beltmatic.AvailableNumber.Companion.initialNumber
 
 class AvailableNumbers() {
 
-    private val allAvailableNumbers: MutableMap<Int, AvailableNumber> = mutableMapOf()
+    private val allAvailableNumbers: MutableMap<Int, AvailableNumber> = hashMapOf()
 
     /**
      * Used for initialisation. Wipes all the number collected so far.
@@ -17,30 +18,25 @@ class AvailableNumbers() {
     }
 
     /**
-     * If [newNumber] has smaller operation count than the already existing [AvailableNumber]
-     * (or if no such number already exists), stores the [newNumber].
+     * Stores the [newNumber] if it is better than already existing [AvailableNumber].
      */
     fun addIfBetter(newNumber: AvailableNumber) {
-        val oldNumber = allAvailableNumbers[newNumber.number]
+        val oldNumber: AvailableNumber? = allAvailableNumbers[newNumber.number]
 
         if (oldNumber == null) {
             put(newNumber)
             return
         }
 
-        if (oldNumber.operation == null) {
-            // this is an initial number, new number cannot be better
-            return
-        }
-
         if (newNumber.formulaOperationsCount < oldNumber.formulaOperationsCount) {
+            //TODO this is dead code, because of how this method is called from the BeltmaticSolver,
             put(newNumber)
             return
         }
 
         if (
             newNumber.formulaOperationsCount == oldNumber.formulaOperationsCount
-            && newNumber.operation!!.preference > oldNumber.operation.preference
+            && newNumber.formulaOperationsCost < oldNumber.formulaOperationsCost
         ) {
             put(newNumber)
             return
@@ -51,13 +47,32 @@ class AvailableNumbers() {
         allAvailableNumbers[newNumber.number] = newNumber
     }
 
-    fun getAll() = allAvailableNumbers.values.toList()
+    fun get(number: Int): AvailableNumber? {
+        if (!allAvailableNumbers.containsKey(number)) {
+            return null
+        }
 
-    fun get(targetNumber: Int): AvailableNumber? {
-        return allAvailableNumbers[targetNumber]
+        return createOptimalNumber(number)
     }
 
-    fun getAllWithOperationCountEqualTo(operationCount: Int) =
+    fun getAllWithOperationCountEqualTo(operationCount: Int): List<AvailableNumber> =
         allAvailableNumbers.values.filter { it.formulaOperationsCount == operationCount }
+
+    /**
+     * [AvailableNumber.leftNumber] and [AvailableNumber.rightNumber] are likely outdated.
+     * This function will pick better ones from [allAvailableNumbers].
+     */
+    private fun createOptimalNumber(target: Int): AvailableNumber {
+        val availableNumber = allAvailableNumbers[target]!!
+        if (availableNumber.isInitialNumber()) {
+            return availableNumber
+        }
+        return availableNumber(
+            availableNumber.number,
+            availableNumber.operation!!,
+            createOptimalNumber(availableNumber.leftNumber!!.number),
+            createOptimalNumber(availableNumber.rightNumber!!.number),
+        )
+    }
 
 }

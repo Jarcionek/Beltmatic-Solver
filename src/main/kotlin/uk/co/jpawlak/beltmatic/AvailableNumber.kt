@@ -7,6 +7,7 @@ data class AvailableNumber private constructor(
     val leftNumber: AvailableNumber?,
     val rightNumber: AvailableNumber?,
     val formulaOperationsCount: Int,
+    val formulaOperationsCost: Int,
 ) {
 
     companion object {
@@ -17,7 +18,8 @@ data class AvailableNumber private constructor(
                 operation = null,
                 leftNumber = null,
                 rightNumber = null,
-                formulaOperationsCount = 0
+                formulaOperationsCount = 0,
+                formulaOperationsCost = 0
             )
         }
 
@@ -32,7 +34,8 @@ data class AvailableNumber private constructor(
                 operation = operation,
                 leftNumber = leftNumber,
                 rightNumber = rightNumber,
-                formulaOperationsCount = leftNumber.formulaOperationsCount + rightNumber.formulaOperationsCount + 1
+                formulaOperationsCount = leftNumber.formulaOperationsCount + rightNumber.formulaOperationsCount + 1,
+                formulaOperationsCost = leftNumber.formulaOperationsCost + rightNumber.formulaOperationsCost + operation.cost
             )
         }
 
