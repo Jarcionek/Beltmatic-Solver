@@ -28,10 +28,9 @@ class AvailableNumbers() {
             return
         }
 
-        if (newNumber.formulaOperationsCount < oldNumber.formulaOperationsCount) {
-            //TODO this is dead code, because of how this method is called from the BeltmaticSolver,
-            put(newNumber)
-            return
+        assert(newNumber.formulaOperationsCount >= oldNumber.formulaOperationsCount) {
+            // this should never happen because of how this method is called from the BeltmaticSolver
+            "New number has lower operations count: $newNumber, $oldNumber"
         }
 
         if (

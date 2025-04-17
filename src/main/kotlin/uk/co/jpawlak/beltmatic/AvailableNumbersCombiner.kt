@@ -70,7 +70,18 @@ class AvailableNumbersCombiner(
      * No shortcuts here. In particular, for commutative properties it needs to perform the operation both ways.
      */
     private fun calculateNewAvailableNumbers(listOne: List<AvailableNumber>, listTwo: List<AvailableNumber>): Sequence<AvailableNumber> {
-        //TODO assert lists have no duplicates, and their intersection is empty
+        assert(listOne.size == listOne.distinct().size) {
+            "List one contains duplicates"
+        }
+
+        assert(listTwo.size == listTwo.distinct().size) {
+            "List two contains duplicates"
+        }
+
+        assert(listOne.intersect(listTwo.toSet()).isEmpty()) {
+            "Lists have common elements: ${listOne.intersect(listTwo.toSet())}"
+        }
+
         return listOne.asSequence().flatMap { a ->
             checkThreadInterrupted()
             listTwo.asSequence().flatMap { b ->

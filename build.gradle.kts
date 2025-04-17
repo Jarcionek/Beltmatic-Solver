@@ -16,6 +16,7 @@ dependencies {
 }
 
 tasks.test {
+//    jvmArgs("-da")
     useJUnitPlatform()
 }
 kotlin {
