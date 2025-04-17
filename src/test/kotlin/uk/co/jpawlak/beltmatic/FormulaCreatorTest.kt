@@ -249,4 +249,26 @@ class FormulaCreatorTest {
         assertEquals("2 * (3^2 / 2)", formulaCreator.createFormula(targetNumber))
     }
 
+    @Test
+    fun `handles left parenthesis in the sub formula`() {
+        val targetNumber = availableNumber(
+            15,
+            ADDITION,
+            availableNumber(
+                14,
+                MULTIPLICATION,
+                availableNumber(
+                    7,
+                    ADDITION,
+                    initialNumber(3),
+                    initialNumber(4)
+                ),
+                initialNumber(2)
+            ),
+            initialNumber(1)
+        )
+
+        assertEquals("(3 + 4) * 2 + 1", formulaCreator.createFormula(targetNumber))
+    }
+
 }

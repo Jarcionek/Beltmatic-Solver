@@ -73,7 +73,7 @@ class FormulaCreator {
         val rightMostOperation: Char = operationPattern.findAll(formula).last().value[0]
 
         return sequenceOf(leftMostOperation, rightMostOperation)
-            .filter { it != '(' && it != ')' } //TODO add a FormulaCreatorTest that checks the formula like (3+4)*2
+            .filter { it != '(' && it != ')' }
             .map { Operation.fromSymbol(it) }
             .sortedBy { it.precedence }
             .first() // we are not expecting a call with formula like (3+4), let it throw
