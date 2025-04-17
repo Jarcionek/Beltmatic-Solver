@@ -90,31 +90,31 @@ class FormulaCreatorTest {
         return Stream.of(
             Arguments.of('^', '^', true), // although not needed, let's add for clarity
             Arguments.of('^', '*', true),
-//            Arguments.of('^', '/', true), // TODO uncomment once division is implemented
+            Arguments.of('^', '/', true),
             Arguments.of('^', '+', true),
             Arguments.of('^', '-', true),
 
             Arguments.of('*', '^', false),
             Arguments.of('*', '*', false),
-//            Arguments.of('*', '/', true),
+            Arguments.of('*', '/', true), // integer operations, loss of precision
             Arguments.of('*', '+', true),
             Arguments.of('*', '-', true),
 
-//            Arguments.of('/', '^', false),
-//            Arguments.of('/', '*', true),
-//            Arguments.of('/', '/', true),
-//            Arguments.of('/', '+', true),
-//            Arguments.of('/', '-', true),
+            Arguments.of('/', '^', false),
+            Arguments.of('/', '*', true),
+            Arguments.of('/', '/', true),
+            Arguments.of('/', '+', true),
+            Arguments.of('/', '-', true),
 
             Arguments.of('+', '^', false),
             Arguments.of('+', '*', false),
-//            Arguments.of('+', '/', false),
+            Arguments.of('+', '/', false),
             Arguments.of('+', '+', false),
             Arguments.of('+', '-', false),
 
             Arguments.of('-', '^', false),
             Arguments.of('-', '*', false),
-//            Arguments.of('-', '/', false),
+            Arguments.of('-', '/', false),
             Arguments.of('-', '+', true),
             Arguments.of('-', '-', true),
         ).map { arguments ->
@@ -164,31 +164,31 @@ class FormulaCreatorTest {
         return Stream.of(
             Arguments.of('^', '^', true), // although not needed, let's add for clarity
             Arguments.of('^', '*', false),
-//            Arguments.of('^', '/', false), // TODO uncomment once division is implemented
+            Arguments.of('^', '/', false),
             Arguments.of('^', '+', false),
             Arguments.of('^', '-', false),
 
             Arguments.of('*', '^', true),
             Arguments.of('*', '*', false),
-//            Arguments.of('*', '/', false),
+            Arguments.of('*', '/', false),
             Arguments.of('*', '+', false),
             Arguments.of('*', '-', false),
 
-//            Arguments.of('/', '^', true),
-//            Arguments.of('/', '*', false),
-//            Arguments.of('/', '/', false),
-//            Arguments.of('/', '+', false),
-//            Arguments.of('/', '-', false),
+            Arguments.of('/', '^', true),
+            Arguments.of('/', '*', false),
+            Arguments.of('/', '/', false),
+            Arguments.of('/', '+', false),
+            Arguments.of('/', '-', false),
 
             Arguments.of('+', '^', true),
             Arguments.of('+', '*', true),
-//            Arguments.of('+', '/', true),
+            Arguments.of('+', '/', true),
             Arguments.of('+', '+', false),
             Arguments.of('+', '-', false),
 
             Arguments.of('-', '^', true),
             Arguments.of('-', '*', true),
-//            Arguments.of('-', '/', true),
+            Arguments.of('-', '/', true),
             Arguments.of('-', '+', false),
             Arguments.of('-', '-', false),
         ).map { arguments ->
@@ -225,6 +225,28 @@ class FormulaCreatorTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `correctly handles parentheses around division and multiplication`() {
+        val targetNumber = availableNumber(
+            8,
+            MULTIPLICATION,
+            initialNumber(2),
+            availableNumber(
+                4,
+                DIVISION,
+                availableNumber(
+                    9,
+                    EXPONENTIATION,
+                    initialNumber(3),
+                    initialNumber(2)
+                ),
+                initialNumber(2)
+            )
+        )
+
+        assertEquals("2 * (3^2 / 2)", formulaCreator.createFormula(targetNumber))
     }
 
 }

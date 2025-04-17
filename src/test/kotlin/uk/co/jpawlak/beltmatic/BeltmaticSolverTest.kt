@@ -133,12 +133,36 @@ class BeltmaticSolverTest {
     }
 
     @TestFactory
+    fun `returns formula with division(s)`(): Stream<DynamicTest> {
+        return Stream.of(
+            Arguments.of(1, listOf(2, 14),            7,     "14 / 2"              ),
+            Arguments.of(4, listOf(4, 7, 21, 18, 24), 56739, "18 + 7 * (21^4 / 24)"),
+        ).map {
+            val arguments = it.get()
+
+            val expectedOperations = arguments[0] as Int
+            val availableNumbers = arguments[1] as List<Int>
+            val targetNumber = arguments[2] as Int
+            val exampleFormula = arguments[3] as String
+            FormulaVerifier.verify(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+
+            DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
+                val formula = solver.solve(availableNumbers, targetNumber)
+                val result = ExpressionEvaluator.evaluate(formula)
+
+                assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+                assertEquals(expectedOperations, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
+            }
+        }
+    }
+
+    @TestFactory
     fun `returns formula with any operations`(): Stream<DynamicTest> {
         return Stream.of(
             Arguments.of(4, listOf(1, 3, 6, 9),         766,   "9^3 + 6*6 + 1"         ),
             Arguments.of(4, listOf(2, 3, 7, 11),        8770,  "((2 * 3 ^ 7) + 11) * 2"),
             Arguments.of(3, listOf(2, 5, 16),           1369,  "(2*16 + 5)^2"          ),
-            Arguments.of(4, listOf(2, 3, 5, 13, 23),    1738,  "5^2 * 3*23 + 13"       ),
+            Arguments.of(3, listOf(2, 3, 5, 23),        1738,  "23^3 / (2 + 5)"        ),
             Arguments.of(3, listOf(3, 7, 11, 13),       4470,  "7^3 * 13 + 11"         ),
             Arguments.of(4, listOf(2, 3, 7, 8, 19),     7445,  "8*19*7^2 - 3"          ),
             Arguments.of(5, listOf(2, 4, 5, 7, 11),     31801, "7^2 * 11 * (11*5 + 4)" ),

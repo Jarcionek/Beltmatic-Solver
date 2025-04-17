@@ -1,7 +1,6 @@
 package uk.co.jpawlak.beltmatic
 
-import uk.co.jpawlak.beltmatic.Operation.EXPONENTIATION
-import uk.co.jpawlak.beltmatic.Operation.SUBTRACTION
+import uk.co.jpawlak.beltmatic.Operation.*
 
 class FormulaCreator {
 
@@ -44,6 +43,8 @@ class FormulaCreator {
             if (rightSubFormulaOperation == EXPONENTIATION && operation == EXPONENTIATION) return true
             if (rightSubFormulaOperation.precedence < operation.precedence) return true
             if (rightSubFormulaOperation.precedence == operation.precedence && operation == SUBTRACTION) return true
+            if (rightSubFormulaOperation.precedence == operation.precedence && operation == DIVISION) return true
+            if (operation == MULTIPLICATION && rightSubFormulaOperation == DIVISION) return true
         }
         return false
     }
@@ -72,7 +73,7 @@ class FormulaCreator {
         val rightMostOperation: Char = operationPattern.findAll(formula).last().value[0]
 
         return sequenceOf(leftMostOperation, rightMostOperation)
-            .filter { it != '(' && it != ')' }
+            .filter { it != '(' && it != ')' } //TODO add a FormulaCreatorTest that checks the formula like (3+4)*2
             .map { Operation.fromSymbol(it) }
             .sortedBy { it.precedence }
             .first() // we are not expecting a call with formula like (3+4), let it throw

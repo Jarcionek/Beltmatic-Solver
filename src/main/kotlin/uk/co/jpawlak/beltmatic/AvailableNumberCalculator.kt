@@ -52,6 +52,22 @@ class AvailableNumberCalculator {
         )
     }
 
+    // TODO add remainder to available numbers - this requires a feature of a single use numbers
+    fun divide(dividend: AvailableNumber, divisor: AvailableNumber): AvailableNumber? {
+        if (divisor.number == 0) return null // TODO in case of division by 0, the game returns 0 as a result and dividend as a remainder
+
+        val result = dividend.number / divisor.number
+        if (result < -NUMBER_LIMIT || NUMBER_LIMIT < result) {
+            return null
+        }
+        return availableNumber(
+            result,
+            DIVISION,
+            dividend,
+            divisor,
+        )
+    }
+
     fun power(base: AvailableNumber, exponent: AvailableNumber): AvailableNumber? {
         // TODO implement extra optimisations and checks
         //
