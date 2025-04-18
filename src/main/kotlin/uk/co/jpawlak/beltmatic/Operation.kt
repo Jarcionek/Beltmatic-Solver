@@ -17,6 +17,7 @@ enum class Operation(
     EXPONENTIATION('^', 3, 10),
     MULTIPLICATION('*', 2, 1),
     DIVISION('/', 2, 100),
+    REMAINDER('%', 2, 100),
     ADDITION('+', 1, 1),
     SUBTRACTION('-', 1, 10);
 

@@ -68,7 +68,7 @@ class FormulaCreator {
             return null
         }
 
-        val operationPattern = Regex("[-+/*^()]")
+        val operationPattern = Regex("[-+/%*^()]")
         val leftMostOperation: Char = operationPattern.find(formula)!!.value[0]
         val rightMostOperation: Char = operationPattern.findAll(formula).last().value[0]
 

@@ -54,11 +54,12 @@ class AvailableNumbersCombiner(
                     calculator.add(a, b),
                     calculator.power(a, b),
                     calculator.power(b, a),
-                    calculator.divide(a, b),
-                    calculator.divide(b, a),
                     calculator.subtract(a, b),
                     calculator.subtract(b, a),
-                ).filterNotNull()
+                )
+                    .plus(calculator.divide(a, b))
+                    .plus(calculator.divide(b, a))
+                    .filterNotNull()
             }
         }
     }
@@ -90,11 +91,12 @@ class AvailableNumbersCombiner(
                     calculator.add(a, b),
                     calculator.power(a, b),
                     calculator.power(b, a),
-                    calculator.divide(a, b),
-                    calculator.divide(b, a),
                     calculator.subtract(a, b),
                     calculator.subtract(b, a),
-                ).filterNotNull()
+                )
+                    .plus(calculator.divide(a, b))
+                    .plus(calculator.divide(b, a))
+                    .filterNotNull()
             }
         }
     }

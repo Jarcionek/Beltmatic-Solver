@@ -185,4 +185,28 @@ class BeltmaticSolverTest {
         }
     }
 
+    @TestFactory
+    fun `uses remainder of the division`(): Stream<DynamicTest> {
+        return Stream.of(
+            Arguments.of(1, listOf(3, 8),         2,   "8 % 3"),
+            Arguments.of(3, listOf(7, 60),        12,   "60 / 7 + 60 % 7"), // TODO this should be counted as 2 operations
+        ).map {
+            val arguments = it.get()
+
+            val expectedOperations = arguments[0] as Int
+            val availableNumbers = arguments[1] as List<Int>
+            val targetNumber = arguments[2] as Int
+            val exampleFormula = arguments[3] as String
+            FormulaVerifier.verify(exampleFormula, availableNumbers, targetNumber, expectedOperations)
+
+            DynamicTest.dynamicTest("$availableNumbers -> $targetNumber in $expectedOperations operations") {
+                val formula = solver.solve(availableNumbers, targetNumber)
+                val result = ExpressionEvaluator.evaluate(formula)
+
+                assertEquals(targetNumber, result, "The result of $formula is not $targetNumber")
+                assertEquals(expectedOperations, FormulaVerifier.operationCount(formula), "Unexpected number of operations: $formula")
+            }
+        }
+    }
+
 }

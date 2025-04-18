@@ -30,14 +30,18 @@ class AvailableNumberCalculator {
         return limitedAvailableNumber(result, MULTIPLICATION, a, b)
     }
 
-    // TODO add remainder to available numbers - this requires a feature of a single use numbers
-    fun divide(dividend: AvailableNumber, divisor: AvailableNumber): AvailableNumber? {
-        if (divisor.number == 0) return null // TODO in case of division by 0, the game returns 0 as a result and dividend as a remainder
+    // TODO how to handle the cost? if both numbers are used in the final formula, we should count this as a single operation
+    fun divide(dividend: AvailableNumber, divisor: AvailableNumber): Sequence<AvailableNumber> {
+        if (divisor.number == 0) { // in case of division by 0, the game returns 0 as a quotient and dividend as a remainder, which is a useless operation
+            return emptySequence()
+        }
 
-        val result = dividend.number / divisor.number
-
-        return limitedAvailableNumber(result, DIVISION, dividend, divisor)
+        return sequenceOf(
+            limitedAvailableNumber(dividend.number / divisor.number, DIVISION, dividend, divisor),
+            limitedAvailableNumber(dividend.number % divisor.number, REMAINDER, dividend, divisor),
+        ).filterNotNull()
     }
+
 
     fun power(base: AvailableNumber, exponent: AvailableNumber): AvailableNumber? {
         if (exponent.number < 2) {

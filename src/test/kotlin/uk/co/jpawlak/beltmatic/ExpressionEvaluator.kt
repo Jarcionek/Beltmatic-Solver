@@ -11,12 +11,14 @@ private const val SCIENTIFIC_NOTATION_NOT_SUPPORTED = false
 object ExpressionEvaluator {
 
     private val INTEGER_DIVIDE: Operator = Operator(DIVIDE.symbol, DIVIDE.operandCount, DIVIDE.associativity, DIVIDE.precedence)
+    private val REMAINDER: Operator = Operator("%", DIVIDE.operandCount, DIVIDE.associativity, DIVIDE.precedence)
 
     private val evaluator: DoubleEvaluator = object : DoubleEvaluator(
         Parameters().apply {
             add(EXPONENT)
             add(MULTIPLY)
             add(INTEGER_DIVIDE)
+            add(REMAINDER)
             add(PLUS)
             add(MINUS)
             addExpressionBracket(BracketPair.PARENTHESES)
@@ -31,6 +33,9 @@ object ExpressionEvaluator {
         ): Double {
             if (operator == INTEGER_DIVIDE) {
                 return (operands!!.next().toInt() / operands.next().toInt()).toDouble()
+            }
+            if (operator == REMAINDER) {
+                return (operands!!.next().toInt() % operands.next().toInt()).toDouble()
             }
             return super.evaluate(operator, operands, evaluationContext)
         }

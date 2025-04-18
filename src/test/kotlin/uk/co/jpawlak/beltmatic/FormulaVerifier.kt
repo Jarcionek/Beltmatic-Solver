@@ -20,10 +20,10 @@ object FormulaVerifier {
 
         val result = ExpressionEvaluator.evaluate(formula)
 
-        assertEquals(targetNumber, result, "Example formula does not evaluate to $targetNumber")
+        assertEquals(targetNumber, result, "Example formula $formula does not evaluate to $targetNumber")
         assertEquals(expectedOperations, operationCount(formula), "Example formula contains more operations than expected")
     }
 
-    fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '^',) }
+    fun operationCount(formula: String) = formula.count { it in listOf('+', '-', '*', '/', '%', '^',) }
 
 }
